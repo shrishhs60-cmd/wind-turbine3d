@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Siemens Gamesa SG 5.0-145 | Industrial Wind Turbine Simulator</title>
+  <meta name="description" content="High-fidelity 3D interactive engineering simulation of the Siemens Gamesa SG 5.0-145 wind turbine. Features IntegralBlade with DinoTails, OptiTip, drivetrain cutaway, and SCADA controls." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 9V2l4 7h-4z" fill="currentColor" opacity="0.8"/>
+            <path d="M9.4 13.5L3.3 17l6.6 3.4-0.5-6.9z" fill="currentColor" opacity="0.8"/>
+            <path d="M14.6 13.5l6.1 3.5-6.6 3.4 0.5-6.9z" fill="currentColor" opacity="0.8"/>
+          </svg>
+        </div>
+        <div class="header-title-group">
+          <h1><span style="color:#00a3ad">SIEMENS</span> Gamesa</h1>
+          <span class="sub-badge">SG 5.0-145 · HIGHLAND MOUNTAIN RIDGE · 5.0 MW</span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="status-indicator-pill" id="system-status-pill">
+          <span class="pulse-dot"></span>
+          <span id="system-status-text">ONLINE · OPTITIP ACTIVE</span>
+        </div>
+        <div class="wind-quick-badge">
+          <span class="quick-label">WIND</span>
+          <span class="quick-val" id="top-wind-val">11.5</span>
+          <span class="quick-unit">m/s</span>
+        </div>
+        <div class="power-quick-badge">
+          <span class="quick-label">OUTPUT</span>
+          <span class="quick-val" id="top-power-val">5,000</span>
+          <span class="quick-unit">kW</span>
+        </div>
+        <div class="site-quick-badge" title="Highland Mountain Ridge Atmospheric Conditions (850m ASL)">
+          <span class="quick-label">SITE</span>
+          <span class="quick-val" id="top-site-val">8.5°C</span>
+          <span class="quick-unit">· 922 hPa</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Environment Time-of-Day Switcher -->
+        <div class="env-toggle-group" title="Time of Day Lighting">
+          <button class="env-btn active" data-tod="day" id="btn-tod-day" aria-label="Sunrise / Day Mode" title="Highland Golden Sunrise">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+          </button>
+          <button class="env-btn" data-tod="sunset" id="btn-tod-sunset" aria-label="Sunset Mode" title="Mountain Twilight">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/></svg>
+          </button>
+          <button class="env-btn" data-tod="night" id="btn-tod-night" aria-label="Night Mode" title="Highland Starry Night">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+
+        <!-- Fullscreen Mode Toggle -->
+        <button class="icon-toggle-btn" id="btn-fullscreen-toggle" title="Toggle Fullscreen Immersion Mode">
+          <svg id="icon-fs-enter" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+          <svg id="icon-fs-exit" class="hidden" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M10 4v6m0 0H4m6 0L3 3m10 7h6m0 0V4m0 6l7-7"/>
+          </svg>
+        </button>
+
+        <!-- Sound Synthesizer Toggle -->
+        <button class="icon-toggle-btn" id="btn-audio-toggle" title="Toggle Synthesized Aero/Gen Sound">
+          <svg id="icon-sound-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <line x1="23" y1="9" x2="17" y2="15"/>
+            <line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+          <svg id="icon-sound-on" class="hidden" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
+
+        <!-- X-Ray Cutaway View Toggle -->
+        <button class="header-action-btn" id="btn-xray-toggle" title="Toggle Nacelle Cutaway (Inspect Internal Drivetrain)">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span>X-Ray Cutaway</span>
+        </button>
+
+        <!-- Export Standard 3D Model (.GLB) Button -->
+        <button class="header-action-btn" id="btn-export-glb" title="Export complete Siemens Gamesa 3D Model in standard binary GLB format">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Export 3D (.GLB)</span>
+        </button>
+
+        <!-- Specs & Blueprint Modal Toggle -->
+        <button class="header-action-btn primary" id="btn-specs-open">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="9" y1="21" x2="9" y2="9"/>
+          </svg>
+          <span>Engineering Blueprint</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Viewport for 3D Scene -->
+    <main class="viewport-container" id="viewport-container">
+      <canvas id="webgl-canvas"></canvas>
+
+      <!-- Optical Sun Glare Lens Flare Element -->
+      <div id="sun-glare-effect" class="sun-glare-effect"></div>
+
+      <!-- 3D Digital Twin Hotspot Callout Pins Overlay -->
+      <div id="hotspot-overlay-container" class="hotspot-overlay-container"></div>
+
+      <!-- Viewport Overlays: Compass & Axis Indicator -->
+      <div class="viewport-hud-widget top-left">
+        <div class="compass-ring" id="compass-ring" title="Wind vs Nacelle Heading">
+          <div class="compass-dial">
+            <div class="compass-needle-wind" id="compass-needle-wind" title="Wind Direction"></div>
+            <div class="compass-needle-turbine" id="compass-needle-turbine" title="Turbine Yaw Heading"></div>
+            <span class="compass-cardinal n">N</span>
+            <span class="compass-cardinal e">E</span>
+            <span class="compass-cardinal s">S</span>
+            <span class="compass-cardinal w">W</span>
+          </div>
+          <div class="compass-info">
+            <div class="compass-line"><span class="k">WIND DIR:</span> <span class="v" id="compass-wind-deg">270° (W)</span></div>
+            <div class="compass-line"><span class="k">NACELLE:</span> <span class="v" id="compass-yaw-deg">270° (W)</span></div>
+            <div class="compass-line"><span class="k">ALIGNMENT:</span> <span class="v highlight" id="compass-yaw-error">0.0° (LOCKED)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Camera View Quick Presets -->
+      <div class="camera-presets-bar">
+        <span class="bar-tag">VIEWS:</span>
+        <button class="cam-preset-btn active" data-preset="ridge" title="Mountain Ridge Vista: Sweeping view of the turbine line stretching down the mountain ridge into the golden sunrise above the sea of clouds">Ridge Vista 🌄</button>
+        <button class="cam-preset-btn drone-btn" data-preset="drone" id="btn-cam-drone" title="Cinematic Drone Flyover: Sweeping high-speed cinematic flight along the mountain ridge above the cloud sea">Drone Flyover 🚁</button>
+        <button class="cam-preset-btn" data-preset="hero" title="Cinematic 360° continuous turntable orbit showing the running internal mechanism">Hero Orbit ⟳</button>
+        <button class="cam-preset-btn" data-preset="nacelle" title="Close-up inspection of internal planetary gears, main bearing, brake disc, and generator">Nacelle / Drivetrain</button>
+        <button class="cam-preset-btn" data-preset="hub">Rotor Hub & Pitch</button>
+        <button class="cam-preset-btn" data-preset="wingtip">Blade Tip View</button>
+        <button class="cam-preset-btn" data-preset="tower">Base & Foundation</button>
+        <button class="cam-preset-btn" data-preset="aerial">Bird's-Eye Far</button>
+      </div>
+
+      <!-- Component Click Inspector Card (Floating when a part is clicked) -->
+      <div class="component-inspection-card hidden" id="inspection-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="component-tag" id="inspect-tag">DRIVETRAIN</span>
+            <h3 id="inspect-title">Planetary Gearbox</h3>
+          </div>
+          <button class="btn-close-card" id="btn-close-inspect" aria-label="Close Inspector">&times;</button>
+        </div>
+        <div class="card-body">
+          <p id="inspect-desc">Transforms low-speed high-torque rotor rotation (11.5 RPM) into high-speed low-torque generator rotation (1,050 RPM) using a 2-stage planetary and 1-stage helical gear arrangement.</p>
+          <div class="specs-grid" id="inspect-specs">
+            <div class="spec-cell"><span class="spec-k">Gear Ratio</span><span class="spec-v">1 : 91.4</span></div>
+            <div class="spec-cell"><span class="spec-k">Lubrication</span><span class="spec-v">Synthetic ISO VG 320</span></div>
+            <div class="spec-cell"><span class="spec-k">Rated Torque</span><span class="spec-v">3,500 kN·m</span></div>
+            <div class="spec-cell"><span class="spec-k">Efficiency</span><span class="spec-v">97.4%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left SCADA Telemetry Panel -->
+      <aside class="scada-panel left-panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <div class="indicator-icon-pulse"></div>
+            <h2>SCADA TELEMETRY</h2>
+          </div>
+          <span class="pill-id" id="scada-active-id">WTG-01</span>
+        </div>
+
+        <!-- Scope Switcher: Single Turbine vs Mountain Ridge Wind Farm Fleet -->
+        <div class="scada-scope-bar">
+          <button class="scope-btn active" id="btn-scope-turbine" data-scope="turbine">WTG-01 Focus</button>
+          <button class="scope-btn" id="btn-scope-farm" data-scope="farm">Ridge Farm (8x WTGs)</button>
+        </div>
+
+        <div class="telemetry-sections">
+          <!-- SINGLE TURBINE SCADA TELEMETRY VIEW -->
+          <div id="telemetry-turbine-view">
+          <!-- Active Power Meter -->
+          <div class="hud-block primary-glow">
+            <div class="block-title">
+              <span>ACTIVE POWER GENERATION</span>
+              <span class="chip-live">LIVE</span>
+            </div>
+            <div class="power-gauge-wrap">
+              <div class="big-metric-row">
+                <span class="metric-number" id="metric-power-mw">4.18</span>
+                <span class="metric-unit">MW</span>
+              </div>
+              <div class="power-bar-track">
+                <div class="power-bar-fill" id="power-bar-fill" style="width: 98%;"></div>
+                <div class="power-bar-marker rated" title="Rated 5.0 MW (100%)"></div>
+              </div>
+              <div class="gauge-scale-legend">
+                <span>0 MW</span>
+                <span>2.5 MW (50%)</span>
+                <span>5.0 MW (Rated)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rotor & Generator Drivetrain Telemetry -->
+          <div class="hud-block">
+            <div class="block-title">
+              <span>DRIVETRAIN SPEED & TORQUE</span>
+            </div>
+            <div class="stats-compact-grid">
+              <div class="stat-card">
+                <div class="stat-lbl">ROTOR SPEED</div>
+                <div class="stat-val-row">
+                  <span class="stat-val" id="metric-rotor-rpm">11.6</span>
+                  <span class="stat-u">RPM</span>
+                </div>
+                <div class="stat-sub">Max: 12.2 RPM</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-lbl">GENERATOR SPEED</div>
+                <div class="stat-val-row">
+                  <span class="stat-val" id="metric-gen-rpm">1,060</span>
+                  <span class="stat-u">RPM</span>
+                </div>
+                <div class="stat-sub">Ratio: 1 : 104.2</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-lbl">TIP SPEED</div>
+                <div class="stat-val-row">
+                  <span class="stat-val" id="metric-tip-speed">275</span>
+                  <span class="stat-u">km/h</span>
+                </div>
+                <div class="stat-sub">Mach 0.22</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-lbl">TIP SPEED RATIO (&lambda;)</div>
+                <div class="stat-val-row">
+                  <span class="stat-val" id="metric-tsr">8.05</span>
+                  <span class="stat-u">&lambda;</span>
+                </div>
+                <div class="stat-sub">Optimum: 8.10</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-lbl">AERO TORQUE</div>
+                <div class="stat-val-row">
+                  <span class="stat-val" id="metric-torque">3,440</span>
+                  <span class="stat-u">kN·m</span>
+                </div>
+                <div class="stat-sub">Thrust: 412 kN</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-lbl">POWER COEFF (Cp)</div>
+                <div class="stat-val-row">
+                  <span class="stat-val highlight-cyan" id="metric-cp">0.482</span>
+                  <span class="stat-u">/ 0.593</span>
+                </div>
+                <div class="stat-sub">Betz Limit: 59.3%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Blade Pitch & Mechanical Loads -->
+          <div class="hud-block">
+            <div class="block-title">
+              <span>PITCH & ENVIRONMENTAL LOADS</span>
+            </div>
+            <div class="pitch-visualizer-row">
+              <div class="pitch-blade-pill">
+                <span class="p-blade">BLADE 1</span>
+                <span class="p-deg" id="blade1-pitch-val">3.2°</span>
+              </div>
+              <div class="pitch-blade-pill">
+                <span class="p-blade">BLADE 2</span>
+                <span class="p-deg" id="blade2-pitch-val">3.2°</span>
+              </div>
+              <div class="pitch-blade-pill">
+                <span class="p-blade">BLADE 3</span>
+                <span class="p-deg" id="blade3-pitch-val">3.2°</span>
+              </div>
+            </div>
+            <div class="meter-row-container">
+              <div class="meter-item">
+                <div class="meter-info">
+                  <span class="meter-name">Generator Temp</span>
+                  <span class="meter-val" id="temp-gen-val">68.4 °C</span>
+                </div>
+                <div class="meter-track"><div class="meter-bar" id="temp-gen-bar" style="width: 58%;"></div></div>
+              </div>
+              <div class="meter-item">
+                <div class="meter-info">
+                  <span class="meter-name">Tower Top Deflection</span>
+                  <span class="meter-val" id="deflect-val">0.38 m</span>
+                </div>
+                <div class="meter-track"><div class="meter-bar yellow" id="deflect-bar" style="width: 32%;"></div></div>
+              </div>
+              <div class="meter-item">
+                <div class="meter-info">
+                  <span class="meter-name">Drivetrain Vibration</span>
+                  <span class="meter-val" id="vibe-val">1.2 mm/s</span>
+                </div>
+                <div class="meter-track"><div class="meter-bar green" id="vibe-bar" style="width: 24%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Lifetime Cumulative Production -->
+          <div class="hud-block mini-stats-grid">
+            <div class="mini-stat">
+              <span class="m-k">CUMULATIVE ENERGY</span>
+              <span class="m-v" id="cum-energy-val">14,285 MWh</span>
+            </div>
+            <div class="mini-stat">
+              <span class="m-k">CO2 OFFSET</span>
+              <span class="m-v green" id="co2-offset-val">10,142 t</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- WIND FARM FLEET OVERVIEW VIEW (8x SG 5.0-145 ON HIGHLAND RIDGE) -->
+        <div id="telemetry-farm-view" class="hidden">
+          <div class="hud-block primary-glow">
+            <div class="block-title">
+              <span>WIND PARK AGGREGATE POWER</span>
+              <span class="chip-live">8/8 ONLINE</span>
+            </div>
+            <div class="power-gauge-wrap">
+              <div class="big-metric-row">
+                <span class="metric-number" id="farm-power-mw">38.97</span>
+                <span class="metric-unit">MW</span>
+              </div>
+              <div class="power-bar-track">
+                <div class="power-bar-fill" id="farm-power-bar" style="width: 97.4%;"></div>
+                <div class="power-bar-marker rated" title="Total Rated 40.0 MW"></div>
+              </div>
+              <div class="gauge-scale-legend">
+                <span>0 MW</span>
+                <span>20.0 MW (50%)</span>
+                <span>40.0 MW (Cap)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hud-block">
+            <div class="block-title">
+              <span>SUBSTATION & GRID DISPATCH</span>
+            </div>
+            <div class="farm-stats-header">
+              <div class="farm-stat-card">
+                <div class="farm-stat-lbl">GRID VOLTAGE</div>
+                <div class="farm-stat-val" id="farm-voltage-val">33.0 kV</div>
+              </div>
+              <div class="farm-stat-card">
+                <div class="farm-stat-lbl">GRID FREQ</div>
+                <div class="farm-stat-val" id="farm-freq-val">50.00 Hz</div>
+              </div>
+              <div class="farm-stat-card">
+                <div class="farm-stat-lbl">CAPACITY FACTOR</div>
+                <div class="farm-stat-val" id="farm-cf-val">88.5%</div>
+              </div>
+              <div class="farm-stat-card">
+                <div class="farm-stat-lbl">TODAY GEN</div>
+                <div class="farm-stat-val" id="farm-gen-val">312.4 MWh</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hud-block">
+            <div class="block-title">
+              <span>RIDGE STRING TURBINE FLEET</span>
+            </div>
+            <div class="farm-turbines-list" id="farm-turbines-list">
+              <!-- Dynamically populated 8 turbine status rows -->
+            </div>
+          </div>
+        </div>
+      </div>
+      </aside>
+
+      <!-- Right Control & Operations Panel -->
+      <aside class="scada-panel right-panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <h2>TURBINE CONTROLS</h2>
+          </div>
+          <span class="pill-mode" id="badge-op-mode">AUTO MPPT</span>
+        </div>
+
+        <div class="control-sections">
+          <!-- Wind Speed Control Slider & Presets -->
+          <div class="control-card">
+            <div class="ctrl-header">
+              <label for="slider-wind-speed">WIND SPEED</label>
+              <div class="value-display">
+                <span class="value-num" id="display-wind-speed">12.0</span>
+                <span class="value-unit">m/s</span>
+                <span class="value-secondary" id="display-wind-knots">(23.3 kts)</span>
+              </div>
+            </div>
+            <input type="range" id="slider-wind-speed" min="0" max="30" step="0.2" value="12.0" class="custom-slider" />
+            <div class="slider-marks">
+              <span title="Cut-in">0</span>
+              <span title="Cut-in Speed (3 m/s)">3 m/s [Cut-in]</span>
+              <span title="Rated Speed (12 m/s)">12 m/s [Rated]</span>
+              <span title="Cut-out (25 m/s)">25 m/s [Cut-out]</span>
+              <span>30</span>
+            </div>
+
+            <!-- Beaufort Preset Buttons -->
+            <div class="quick-preset-buttons">
+              <button class="preset-btn" data-wind="2.5">Calm (2.5)</button>
+              <button class="preset-btn" data-wind="7.0">Breeze (7)</button>
+              <button class="preset-btn active" data-wind="12.0">Optimal (12)</button>
+              <button class="preset-btn" data-wind="18.0">Gale (18)</button>
+              <button class="preset-btn danger" data-wind="26.0">Storm (26)</button>
+            </div>
+          </div>
+
+          <!-- Wind Direction / Yaw Slider -->
+          <div class="control-card">
+            <div class="ctrl-header">
+              <label for="slider-wind-dir">WIND DIRECTION</label>
+              <div class="value-display">
+                <span class="value-num" id="display-wind-dir">270</span>
+                <span class="value-unit">°</span>
+                <span class="value-secondary" id="display-wind-cardinal">West</span>
+              </div>
+            </div>
+            <input type="range" id="slider-wind-dir" min="0" max="360" step="1" value="270" class="custom-slider" />
+            <div class="slider-marks">
+              <span>0° (N)</span>
+              <span>90° (E)</span>
+              <span>180° (S)</span>
+              <span>270° (W)</span>
+              <span>360°</span>
+            </div>
+          </div>
+
+          <!-- Operational Mode Radio / Toggles -->
+          <div class="control-card">
+            <span class="card-section-title">OPERATING REGIME</span>
+            <div class="mode-selector-grid">
+              <button class="mode-select-btn active" id="btn-mode-auto" data-mode="auto">
+                <span class="mode-dot"></span>
+                <span class="m-title">Auto-MPPT Grid</span>
+                <span class="m-sub">Active pitch & torque</span>
+              </button>
+              <button class="mode-select-btn" id="btn-mode-manual" data-mode="manual">
+                <span class="mode-dot"></span>
+                <span class="m-title">Manual Override</span>
+                <span class="m-sub">Pitch & Yaw control</span>
+              </button>
+            </div>
+
+            <!-- Manual Pitch & Yaw Controls (Visible in Manual Mode) -->
+            <div class="manual-controls-drawer hidden" id="manual-controls-drawer">
+              <div class="ctrl-header small">
+                <label for="slider-manual-pitch">MANUAL PITCH ANGLE</label>
+                <span class="value-num small" id="display-manual-pitch">3.2°</span>
+              </div>
+              <input type="range" id="slider-manual-pitch" min="0" max="90" step="0.5" value="3.2" class="custom-slider" />
+
+              <div class="ctrl-header small" style="margin-top: 10px;">
+                <label for="slider-manual-yaw">MANUAL NACELLE YAW</label>
+                <span class="value-num small" id="display-manual-yaw">270°</span>
+              </div>
+              <input type="range" id="slider-manual-yaw" min="0" max="360" step="1" value="270" class="custom-slider" />
+            </div>
+          </div>
+
+          <!-- Emergency Actions & Safety -->
+          <div class="control-card safety-card">
+            <span class="card-section-title">SAFETY & BRAKE PROTOCOLS</span>
+            <div class="safety-buttons-row">
+              <button class="safety-btn emergency-brake-btn" id="btn-emergency-brake">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <rect x="6" y="6" width="12" height="12" rx="2" />
+                </svg>
+                <span>EMERGENCY BRAKE</span>
+              </button>
+              <button class="safety-btn feather-btn" id="btn-feather-storm">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                <span>FEATHER (90°)</span>
+              </button>
+            </div>
+            <button class="reset-state-btn" id="btn-reset-turbine">
+              <span>Resume Grid Synchronized Run</span>
+            </button>
+          </div>
+
+          <!-- Grid Power Curtailment Dispatch -->
+          <div class="control-card">
+            <div class="ctrl-header">
+              <label for="slider-curtailment">GRID DISPATCH CURTAILMENT</label>
+              <div class="value-display">
+                <span class="value-num" id="display-curtailment">100</span>
+                <span class="value-unit">%</span>
+                <span class="value-secondary" id="display-curtail-mw">(5.0 MW)</span>
+              </div>
+            </div>
+            <input type="range" id="slider-curtailment" min="20" max="100" step="5" value="100" class="custom-slider" />
+            <div class="quick-preset-buttons">
+              <button class="preset-btn active" data-curtail="100">100% Full</button>
+              <button class="preset-btn" data-curtail="80">80% Curtail</button>
+              <button class="preset-btn" data-curtail="50">50% Half</button>
+              <button class="preset-btn" data-curtail="20">20% Min</button>
+            </div>
+          </div>
+
+          <!-- Highland Wind Farm Engineering Protocols -->
+          <div class="control-card">
+            <span class="card-section-title">ENGINEERING PROTOCOLS</span>
+            <div class="toggle-switch-list">
+              <label class="toggle-row">
+                <span>Noise Reduced Operation (NRO / DinoTails)</span>
+                <input type="checkbox" id="chk-nro-mode" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="cable-twist-row">
+              <div class="twist-readout">
+                <span class="t-label">Nacelle Cable Twist:</span>
+                <span class="t-value" id="display-cable-twist">48.0°</span>
+              </div>
+              <button class="action-mini-btn" id="btn-cable-untwist" title="Run automated cable untwist procedure">Auto Untwist</button>
+            </div>
+          </div>
+
+          <!-- Visual Flow & Particle Controls -->
+          <div class="control-card">
+            <span class="card-section-title">SIMULATION VISUALIZERS</span>
+            <div class="toggle-switch-list">
+              <label class="toggle-row">
+                <span>3D Digital Twin Hotspots</span>
+                <input type="checkbox" id="chk-hotspots" checked />
+                <span class="toggle-slider"></span>
+              </label>
+              <label class="toggle-row">
+                <span>Cinematic Bloom Post-FX</span>
+                <input type="checkbox" id="chk-bloom" checked />
+                <span class="toggle-slider"></span>
+              </label>
+              <label class="toggle-row">
+                <span>Wind Streamline Vectors</span>
+                <input type="checkbox" id="chk-wind-streamlines" checked />
+                <span class="toggle-slider"></span>
+              </label>
+              <label class="toggle-row">
+                <span>Wind Gust Turbulence</span>
+                <input type="checkbox" id="chk-gusts" checked />
+                <span class="toggle-slider"></span>
+              </label>
+              <label class="toggle-row">
+                <span>Blade Tip Vortices</span>
+                <input type="checkbox" id="chk-vortices" checked />
+                <span class="toggle-slider"></span>
+              </label>
+              <label class="toggle-row">
+                <span>Auxiliary Wind Farm Turbines</span>
+                <input type="checkbox" id="chk-farm-turbines" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Real-Time SCADA Event & Alarm Log Stream -->
+      <div class="scada-event-ticker-bar" id="scada-event-ticker-bar" title="Live SCADA Operations Stream">
+        <div class="ticker-label"><span class="ticker-pulse"></span> SCADA LOG:</div>
+        <div class="ticker-content" id="scada-ticker-text">WTG-01: Grid Synchronized at 33.0 kV loop · OptiTip active</div>
+        <span class="ticker-badge" id="scada-ticker-time">06:42:15</span>
+      </div>
+
+      <!-- Bottom Interactive Power Curve Drawer -->
+      <footer class="bottom-dock-panel" id="bottom-dock-panel">
+        <div class="dock-toggle-bar" id="dock-toggle-bar">
+          <div class="dock-title-group">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3v18h18"/>
+              <path d="M18 9l-5 5-4-4-6 6"/>
+            </svg>
+            <span class="dock-title">AERODYNAMIC POWER CURVE (P vs. V) & TELEMETRY RECORDER</span>
+            <span class="dock-tag">BETZ LIMIT THEOREM</span>
+          </div>
+          <div class="dock-actions">
+            <span class="operating-zone-badge" id="operating-zone-badge">ZONE II: VARIABLE SPEED</span>
+            <button class="btn-dock-collapse" id="btn-dock-collapse" aria-label="Toggle Power Curve Drawer">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="18 15 12 9 6 15"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="dock-content-expanded" id="dock-content-expanded">
+          <div class="chart-container-wrap">
+            <canvas id="power-curve-chart"></canvas>
+          </div>
+          <div class="power-curve-legend-sidebar">
+            <div class="legend-item">
+              <span class="color-dot cutin"></span>
+              <div class="item-text">
+                <span class="t-name">Region I: Cut-In (0–3 m/s)</span>
+                <span class="t-desc">Insufficient wind torque; rotor parked or freewheeling.</span>
+              </div>
+            </div>
+            <div class="legend-item">
+              <span class="color-dot active-region"></span>
+              <div class="item-text">
+                <span class="t-name">Region II: MPPT (3–12 m/s)</span>
+                <span class="t-desc">Variable speed, optimal pitch ($\beta \approx 0^\circ$). Power scales with $v^3$.</span>
+              </div>
+            </div>
+            <div class="legend-item">
+              <span class="color-dot rated-region"></span>
+              <div class="item-text">
+                <span class="t-name">Region III: Rated (12–25 m/s)</span>
+                <span class="t-desc">Active blade pitch regulation caps power at 5.0 MW generator limit.</span>
+              </div>
+            </div>
+            <div class="legend-item">
+              <span class="color-dot cutout"></span>
+              <div class="item-text">
+                <span class="t-name">Region IV: Cut-Out (>25 m/s)</span>
+                <span class="t-desc">Emergency feathering ($\beta = 90^\circ$) to avoid structural failure.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Engineering Blueprint & Technical Specs Modal -->
+    <div class="blueprint-modal-backdrop hidden" id="specs-modal">
+      <div class="blueprint-modal">
+        <div class="blueprint-modal-header">
+          <div class="blueprint-header-title">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            <div>
+              <h2>SIEMENS GAMESA SG 5.0-145 TECHNICAL DATASHEET & SYSTEM SPECIFICATIONS</h2>
+              <p>Certified Class IEC 61400-1 Class S · Onshore OptimaFlex™ Platform</p>
+            </div>
+          </div>
+          <button class="blueprint-close-btn" id="btn-specs-close" aria-label="Close Datasheet">&times;</button>
+        </div>
+
+        <div class="blueprint-modal-body">
+          <!-- Navigation tabs -->
+          <div class="blueprint-tabs">
+            <button class="bp-tab active" data-tab="general">General Architecture</button>
+            <button class="bp-tab" data-tab="rotor">Rotor & Blades</button>
+            <button class="bp-tab" data-tab="drivetrain">Drivetrain & Gearbox</button>
+            <button class="bp-tab" data-tab="electrical">Generator & Grid</button>
+            <button class="bp-tab" data-tab="tower">Tower & Foundation</button>
+            <button class="bp-tab" data-tab="aerodynamics">Aerodynamic Physics</button>
+          </div>
+
+          <div class="blueprint-tab-content" id="tab-content-general">
+            <div class="bp-section-grid">
+              <div class="bp-card">
+                <h3>System Overview</h3>
+                <table class="bp-table">
+                  <tr><th>Manufacturer & Model</th><td>Siemens Gamesa SG 5.0-145 (OptimaFlex)</td></tr>
+                  <tr><th>Rated Electrical Capacity</th><td>5,000 kW (5.0 MW)</td></tr>
+                  <tr><th>Turbine Architecture</th><td>3-Blade Horizontal Axis (HAWT), Upwind</td></tr>
+                  <tr><th>Design Lifetime</th><td>25 Years (>175,000 Operating Hours)</td></tr>
+                  <tr><th>Availability Factor</th><td>> 98.6% Utility Grade</td></tr>
+                  <tr><th>Total Nacelle + Rotor Mass</th><td>~215 Metric Tons</td></tr>
+                  <tr><th>Total Turbine Top Mass</th><td>~460 Metric Tons (incl. Tower)</td></tr>
+                </table>
+              </div>
+
+              <div class="bp-card">
+                <h3>Wind Regimes & Operating Boundaries</h3>
+                <table class="bp-table">
+                  <tr><th>Cut-In Wind Speed ($v_{\text{cut-in}}$)</th><td>3.0 m/s (10.8 km/h)</td></tr>
+                  <tr><th>Rated Wind Speed ($v_{\text{rated}}$)</th><td>11.5 m/s (41.4 km/h)</td></tr>
+                  <tr><th>Cut-Out Wind Speed ($v_{\text{cut-out}}$)</th><td>25.0 m/s (90.0 km/h)</td></tr>
+                  <tr><th>Extreme 50-Year 3s Gust ($v_{\text{ref}}$)</th><td>52.5 m/s (189 km/h)</td></tr>
+                  <tr><th>Operational Temperature Range</th><td>-20°C to +45°C (Cold Climate Pack)</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="blueprint-tab-content hidden" id="tab-content-rotor">
+            <div class="bp-section-grid">
+              <div class="bp-card">
+                <h3>Rotor Aerodynamics & Dimensions</h3>
+                <table class="bp-table">
+                  <tr><th>Rotor Diameter ($D$)</th><td>145.0 meters</td></tr>
+                  <tr><th>Swept Rotor Area ($A$)</th><td>16,513 m² (~3.1 American football fields)</td></tr>
+                  <tr><th>Rotor Speed Operating Range</th><td>5.2 – 12.2 RPM (OptiSpeed® Variable Speed)</td></tr>
+                  <tr><th>Maximum Blade Tip Velocity</th><td>79.7 m/s (287.0 km/h / Mach 0.23)</td></tr>
+                  <tr><th>Rotor Tilt Angle</th><td>5.0° (to ensure blade-tower clearance)</td></tr>
+                  <tr><th>Rotor Cone Angle</th><td>2.5° Upwind Pre-cone</td></tr>
+                </table>
+              </div>
+              <div class="bp-card">
+                <h3>Blade Materials & Pitch System</h3>
+                <table class="bp-table">
+                  <tr><th>Blade Length</th><td>71.0 meters</td></tr>
+                  <tr><th>Blade Technology</th><td>Siemens Gamesa IntegralBlade® (Single-piece cast without glued joints) with DinoTails® & DinoShells®</td></tr>
+                  <tr><th>Aeroacoustics</th><td>DinoTails® Next Generation trailing-edge serrations</td></tr>
+                  <tr><th>Pitch Regulation</th><td>Siemens Gamesa OptiTip® Individual Pitch Control via AC servomotors</td></tr>
+                  <tr><th>Pitch Rate</th><td>Up to 8.0°/second (Emergency fast feathering)</td></tr>
+                  <tr><th>Mass per Blade</th><td>17,200 kg (17.2 Tons)</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="blueprint-tab-content hidden" id="tab-content-drivetrain">
+            <div class="bp-section-grid">
+              <div class="bp-card">
+                <h3>Transmission & Shaft Assembly</h3>
+                <table class="bp-table">
+                  <tr><th>Main Shaft</th><td>Forged 34CrNiMo6 alloy steel with spherical roller main bearing</td></tr>
+                  <tr><th>Gearbox Topology</th><td>2-Stage Planetary (Epicyclic) + 1-Stage Helical parallel gear set</td></tr>
+                  <tr><th>Overall Ratio</th><td>1 : 104.2</td></tr>
+                  <tr><th>Nominal Low-Speed Torque</th><td>4,550 kN·m</td></tr>
+                  <tr><th>Lubrication System</th><td>Pressure-fed circulating synthetic oil with dual offline 5μm filtration and cooling matrix</td></tr>
+                  <tr><th>Mechanical Brake</th><td>High-speed shaft hydraulic disc brake with sintered metallic pads</td></tr>
+                </table>
+              </div>
+              <div class="bp-card">
+                <h3>Yaw Orientation Mechanism</h3>
+                <table class="bp-table">
+                  <tr><th>Yaw Bearing</th><td>External-toothed four-point contact ball bearing ring (Ø 3,400 mm)</td></tr>
+                  <tr><th>Drive Actuators</th><td>4x 6.5 kW electric planetary gear motors with electromagnetic holding brakes</td></tr>
+                  <tr><th>Yaw Speed</th><td>0.5°/second</td></tr>
+                  <tr><th>Cable Untwisting Loop</th><td>Automated 720° clockwise/counter-clockwise untwist cycle</td></tr>
+                  <tr><th>Nacelle Housing Material</th><td>Siemens Gamesa Faceted FRP Canopy with acoustic insulation foam</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="blueprint-tab-content hidden" id="tab-content-electrical">
+            <div class="bp-section-grid">
+              <div class="bp-card">
+                <h3>Generator Architecture</h3>
+                <table class="bp-table">
+                  <tr><th>Generator Type</th><td>Siemens Gamesa OptiSpeed® Doubly-Fed Induction Generator (DFIG)</td></tr>
+                  <tr><th>Rated Capacity</th><td>5,000 kW (5.0 MW) @ 0.95 power factor</td></tr>
+                  <tr><th>Nominal Voltage</th><td>690 V AC, 3-Phase, 50/60 Hz</td></tr>
+                  <tr><th>Synchronous Speed</th><td>1,000 / 1,200 RPM (6-pole pair architecture)</td></tr>
+                  <tr><th>Cooling Circuit</th><td>Siemens Gamesa roof-mounted radiator pack with dual forced-draft fans (IP54)</td></tr>
+                  <tr><th>Power Converter</th><td>Full-scale 4-quadrant IGBT back-to-back PWM frequency converter</td></tr>
+                </table>
+              </div>
+              <div class="bp-card">
+                <h3>Grid Interconnect & Protection</h3>
+                <table class="bp-table">
+                  <tr><th>Step-up Transformer</th><td>0.69 kV / 33 kV Medium Voltage Substation (pad-mounted adjacent to plinth)</td></tr>
+                  <tr><th>Low Voltage Ride-Through (LVRT)</th><td>Active grid support compliance down to 0% residual voltage for 150 ms</td></tr>
+                  <tr><th>Lightning Protection</th><td>IEC 62305-1 Level 1 (Copper blade tip receptor, spark gaps, carbon brushes)</td></tr>
+                  <tr><th>SCADA Communications</th><td>Dual fiber-optic Ethernet ring supporting IEC 61400-25 / Modbus TCP telemetry</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="blueprint-tab-content hidden" id="tab-content-tower">
+            <div class="bp-section-grid">
+              <div class="bp-card">
+                <h3>Tubular Steel Tower</h3>
+                <table class="bp-table">
+                  <tr><th>Hub Height</th><td>107.5 meters above foundation flange</td></tr>
+                  <tr><th>Total Turbine Height (Blade Tip Up)</th><td>180.0 meters</td></tr>
+                  <tr><th>Tower Construction</th><td>4 Conical tubular rolled steel sections in Siemens Gamesa RAL 7035 Light Grey</td></tr>
+                  <tr><th>Base Diameter</th><td>5.1 meters</td></tr>
+                  <tr><th>Top Nacelle Flange Diameter</th><td>3.44 meters</td></tr>
+                  <tr><th>Internal Fitments</th><td>Service hoist lift (2-person capacity), fall-arrest safety ladder, high-voltage busbar cables</td></tr>
+                </table>
+              </div>
+              <div class="bp-card">
+                <h3>Foundation Engineering</h3>
+                <table class="bp-table">
+                  <tr><th>Foundation Type</th><td>Gravity Base octagonal reinforced concrete slab with post-tensioned anchor cage</td></tr>
+                  <tr><th>Concrete Volume</th><td>~680 m³ (C35/45 high-density concrete)</td></tr>
+                  <tr><th>Reinforcing Rebar</th><td>~78 metric tons high-tensile steel rebar</td></tr>
+                  <tr><th>Anchor Bolt Circle</th><td>160x M42 high-grade 10.9 pre-tensioned alloy steel anchor studs</td></tr>
+                  <tr><th>Ground Bearing Pressure</th><td>Max 260 kPa under extreme storm gust overturning moment</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="blueprint-tab-content hidden" id="tab-content-aerodynamics">
+            <div class="bp-section-grid">
+              <div class="bp-card">
+                <h3>Aerodynamic Equations & Betz Limit</h3>
+                <div class="math-card">
+                  <div class="formula">$$P_{\text{wind}} = \frac{1}{2} \rho A v^3$$</div>
+                  <p>Theoretical wind power passing through swept area $A = \pi R^2$. Air density standard $\rho = 1.225\text{ kg/m}^3$. Notice cubic sensitivity to wind speed: doubling wind speed produces <strong>$8\times$</strong> more kinetic energy!</p>
+
+                  <div class="formula" style="margin-top: 14px;">$$P_{\text{mech}} = \frac{1}{2} \rho A v^3 C_p(\lambda, \beta)$$</div>
+                  <p>The aerodynamic power coefficient $C_p$ represents conversion efficiency. According to the <strong>Betz Limit Theorem (1919)</strong>, no wind turbine can capture more than <strong>16/27 (59.3%)</strong> of the kinetic wind stream without stopping the air completely.</p>
+                </div>
+              </div>
+              <div class="bp-card">
+                <h3>Tip Speed Ratio (&lambda;) & Pitch Dynamics</h3>
+                <div class="math-card">
+                  <div class="formula">$$\lambda = \frac{\omega R}{v_{\text{wind}}} = \frac{2\pi \cdot \text{RPM} \cdot R}{60 \cdot v_{\text{wind}}}$$</div>
+                  <p>For modern 3-blade HAWT turbines, the optimal aerodynamic performance peak occurs at <strong>$\lambda \approx 8.0 - 8.2$</strong> with blade pitch angle $\beta \approx 0^\circ$, delivering real-world $C_p \approx 0.485$ (over 81% of theoretical Betz maximum!).</p>
+
+                  <div class="formula" style="margin-top: 14px;">$$\text{Thrust Force: } T = \frac{1}{2} \rho A v^2 C_t$$</div>
+                  <p>Horizontal aerodynamic thrust load on the tower top reaches over 400 kN during maximum power production, absorbed through tower flexing and heavy reinforced foundation.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="blueprint-modal-footer">
+          <span class="cert-text">COMPLIANT WITH DNV-GL-ST-0076 & IEC 61400-1 DESIGN STANDARDS</span>
+          <button class="btn-print" onclick="window.print()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print Specifications
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main ES Module Entry Point -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
