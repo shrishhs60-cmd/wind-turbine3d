@@ -1759,6 +1759,7 @@ body {
 .farm-turbines-list::-webkit-scrollbar {
   width: 4px;
 }
+
 .farm-turbines-list::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 2px;
@@ -1991,6 +1992,7 @@ body {
     transform: scale(0.8);
     opacity: 1;
   }
+
   100% {
     transform: scale(2.2);
     opacity: 0;
