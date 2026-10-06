@@ -232,6 +232,12 @@ class AeroTurbineApp {
         lookAt = new THREE.Vector3(-15.0, 75.0, -80.0);
         this.controls.autoRotate = false;
         break;
+      case 'substation':
+        // Dedicated view framing the 33 kV step-up substation, powerhouse building, and basement cable vault
+        targetPos = new THREE.Vector3(18.5, 9.2, 14.5);
+        lookAt = new THREE.Vector3(5.5, 2.0, 1.5);
+        this.controls.autoRotate = false;
+        break;
       case 'drone':
         // Cinematic Mountain Ridge Drone Flyover Mode
         this.controls.autoRotate = false;
@@ -922,7 +928,8 @@ class AeroTurbineApp {
       { id: 'gearbox', name: 'Planetary Gearbox (1:104.2)', pos: new THREE.Vector3(0, hubH + 2.3, -0.6), preset: 'nacelle' },
       { id: 'generator', name: 'DFIG Generator (5.0 MW)', pos: new THREE.Vector3(0, hubH + 2.3, -3.8), preset: 'nacelle' },
       { id: 'brake', name: 'High-Speed Disc Brake', pos: new THREE.Vector3(0, hubH + 2.3, -2.7), preset: 'nacelle' },
-      { id: 'transformer', name: '33 kV Substation Transformer', pos: new THREE.Vector3(6.8, 1.5, 5.2), preset: 'tower' },
+      { id: 'transformer', name: '33 kV Substation Transformer', pos: new THREE.Vector3(8.8, 2.5, 5.2), preset: 'substation' },
+      { id: 'powerhouse', name: 'Powerhouse & Substation', pos: new THREE.Vector3(8.8, 2.8, -2.4), preset: 'substation' },
       { id: 'metmast', name: '60m Met Mast & LiDAR', pos: new THREE.Vector3(metX, metY + 25.0, 55.0), preset: 'ridge' },
       { id: 'wtg02', name: 'WTG-02 (Ridge Array)', pos: new THREE.Vector3(ridgeX_WTG2, ridgeY_WTG2 + hubH, -100.0), preset: 'farm' }
     ];

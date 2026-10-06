@@ -104,6 +104,12 @@ export class TurbineBuilder {
     this.ambientLight = null;
     this.sunSphere = null;
 
+    // Substation, Powerhouse & Basement References
+    this.substationGroup = null;
+    this.transformerMesh = null;
+    this.powerhouseMesh = null;
+    this.basementVaultMesh = null;
+
     // Siemens Gamesa SG 5.0-145 Dimensions
     this.HUB_HEIGHT = 107.5; // Standard 107.5m hub height
     this.ROTOR_RADIUS = 72.5; // 145.0m rotor diameter (71.0m blade + 1.5m hub radius)
@@ -120,6 +126,7 @@ export class TurbineBuilder {
     this.buildDistantMountainPeaks();
     this.buildMetMastAnemometerTower();
     this.buildWindTurbine();
+    this.buildBasementSubstationPowerhouse();
     this.buildRidgeTurbineString();
     this.buildLivingBeingsEcosystem(); // Highland raptors, ponies, sheep, technicians & vegetation
     this.buildStreamlineParticles();
@@ -1683,6 +1690,505 @@ export class TurbineBuilder {
     this.buildRotorAssembly();
 
     this.scene.add(this.nacelleGroup);
+  }
+
+  buildBasementSubstationPowerhouse() {
+    this.substationGroup = new THREE.Group();
+
+    // 1. Material Library
+    const concretePlinthMat = new THREE.MeshStandardMaterial({
+      color: 0x5a6578,
+      roughness: 0.88,
+      metalness: 0.08,
+    });
+    const concreteFootingMat = new THREE.MeshStandardMaterial({
+      color: 0x475569,
+      roughness: 0.94,
+      metalness: 0.05,
+    });
+    const buildingWallMat = new THREE.MeshStandardMaterial({
+      color: 0xe2e8f0, // RAL 7035 Light Grey Precast Architectural Panels
+      roughness: 0.48,
+      metalness: 0.12,
+    });
+    const sgreTealMat = new THREE.MeshStandardMaterial({
+      color: 0x00646e, // Siemens Gamesa Corporate Livery
+      roughness: 0.35,
+      metalness: 0.45,
+    });
+    const darkSteelMat = new THREE.MeshStandardMaterial({
+      color: 0x1e293b,
+      roughness: 0.38,
+      metalness: 0.82,
+    });
+    const transformerTankMat = new THREE.MeshStandardMaterial({
+      color: 0x243242, // Electrical transformer deep slate
+      roughness: 0.35,
+      metalness: 0.68,
+    });
+    const copperBusMat = new THREE.MeshStandardMaterial({
+      color: 0xb45309, // Heavy electrolytic copper busbars
+      roughness: 0.22,
+      metalness: 0.95,
+    });
+    const porcelainMat = new THREE.MeshStandardMaterial({
+      color: 0x78350f, // High-voltage brown glazed porcelain insulator
+      roughness: 0.15,
+      metalness: 0.1,
+    });
+    const hazardYellowMat = new THREE.MeshStandardMaterial({
+      color: 0xf59e0b, // Safety High-Voltage Yellow
+      roughness: 0.35,
+      metalness: 0.2,
+    });
+    const gravelMat = new THREE.MeshStandardMaterial({
+      color: 0x334155, // Crushed granite ballast drainage bed
+      roughness: 0.96,
+      metalness: 0.04,
+    });
+    const fenceWireMat = new THREE.MeshStandardMaterial({
+      color: 0x94a3b8,
+      roughness: 0.6,
+      metalness: 0.85,
+      wireframe: true,
+    });
+
+    // -------------------------------------------------------------------------
+    // A. REINFORCED CONCRETE FOUNDATION BASEMENT & PLINTH (UNDER TOWER)
+    // -------------------------------------------------------------------------
+    // Upper Tower Plinth Collar (elevated 2.0m from terrain)
+    const upperPlinthGeo = new THREE.CylinderGeometry(4.8, 5.4, 2.1, 32);
+    upperPlinthGeo.translate(0, 1.05, 0);
+    const upperPlinth = new THREE.Mesh(upperPlinthGeo, concretePlinthMat);
+    upperPlinth.receiveShadow = true;
+    upperPlinth.castShadow = true;
+    this.substationGroup.add(upperPlinth);
+
+    // Octagonal Spread Footing Foundation (Sub-base distribution)
+    const footingGeo = new THREE.CylinderGeometry(8.2, 8.8, 1.2, 8);
+    footingGeo.translate(0, -0.6, 0);
+    const footing = new THREE.Mesh(footingGeo, concreteFootingMat);
+    footing.receiveShadow = true;
+    footing.castShadow = true;
+    this.substationGroup.add(footing);
+
+    // High-Tensile Foundation Anchor Bolt Ring
+    const boltRingGeo = new THREE.TorusGeometry(2.72, 0.08, 8, 48);
+    boltRingGeo.rotateX(Math.PI / 2);
+    boltRingGeo.translate(0, 2.02, 0);
+    const boltRing = new THREE.Mesh(boltRingGeo, darkSteelMat);
+    this.substationGroup.add(boltRing);
+
+    // -------------------------------------------------------------------------
+    // B. SUBTERRANEAN BASEMENT CABLE VAULT & INVERTER CHAMBER
+    // -------------------------------------------------------------------------
+    const vaultGroup = new THREE.Group();
+    vaultGroup.position.set(3.4, 0, 1.0);
+
+    // Concrete Vault Shaft Walls (Extending down to -3.2m)
+    const vaultWallsGeo = new THREE.BoxGeometry(3.6, 3.2, 4.2);
+    vaultWallsGeo.translate(0, -1.6, 0);
+    const vaultWalls = new THREE.Mesh(vaultWallsGeo, concreteFootingMat);
+    vaultWalls.receiveShadow = true;
+    vaultGroup.add(vaultWalls);
+
+    // Basement Steel Floor Grating & Tempered Walk-On Inspection Glass
+    const grateGeo = new THREE.BoxGeometry(3.2, 0.08, 3.8);
+    const grateMat = new THREE.MeshStandardMaterial({
+      color: 0x00f2fe,
+      metalness: 0.3,
+      roughness: 0.1,
+      transparent: true,
+      opacity: 0.38,
+      depthWrite: false,
+    });
+    const grateMesh = new THREE.Mesh(grateGeo, grateMat);
+    grateMesh.position.set(0, 0.05, 0);
+    vaultGroup.add(grateMesh);
+
+    // Heavy Industrial Floor Grating Support Frame
+    const frameGeo = new THREE.BoxGeometry(3.4, 0.14, 4.0);
+    const frameMesh = new THREE.Mesh(frameGeo, darkSteelMat);
+    frameMesh.position.set(0, 0.02, 0);
+    vaultGroup.add(frameMesh);
+
+    // Subterranean Inverter & Converter Cabinets (Inside basement vault at y = -1.8m)
+    for (let inv = 0; inv < 3; inv++) {
+      const invGeo = new THREE.BoxGeometry(0.8, 1.8, 0.9);
+      const invMesh = new THREE.Mesh(invGeo, darkSteelMat);
+      invMesh.position.set(-0.9 + inv * 0.9, -1.8, 0.2);
+      vaultGroup.add(invMesh);
+
+      // Status LED indicator strip
+      const ledGeo = new THREE.BoxGeometry(0.5, 0.06, 0.04);
+      const ledMat = new THREE.MeshBasicMaterial({ color: inv === 0 ? 0x00f2fe : 0x10b981 });
+      const ledMesh = new THREE.Mesh(ledGeo, ledMat);
+      ledMesh.position.set(-0.9 + inv * 0.9, -1.2, 0.68);
+      vaultGroup.add(ledMesh);
+    }
+
+    // Heavy Copper 690V Busbars running along basement ceiling into transformer
+    for (let bb = 0; bb < 3; bb++) {
+      const busGeo = new THREE.BoxGeometry(2.8, 0.05, 0.08);
+      const busMesh = new THREE.Mesh(busGeo, copperBusMat);
+      busMesh.position.set(0, -0.3 - bb * 0.12, -0.6);
+      vaultGroup.add(busMesh);
+    }
+
+    // Subterranean Basement Work Light (Cool glow illuminating underground vault)
+    const basementWorkLight = new THREE.PointLight(0x00f2fe, 1.8, 10, 1.4);
+    basementWorkLight.position.set(0, -1.2, 0);
+    vaultGroup.add(basementWorkLight);
+
+    // Basement Steel Access Stairs
+    const bStairMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 });
+    for (let st = 0; st < 6; st++) {
+      const stGeo = new THREE.BoxGeometry(1.0, 0.08, 0.28);
+      const stMesh = new THREE.Mesh(stGeo, bStairMat);
+      stMesh.position.set(1.1, -0.3 - st * 0.45, 1.2 - st * 0.28);
+      vaultGroup.add(stMesh);
+    }
+
+    // Safety Yellow Guardrails around vault perimeter
+    const bRailMat = hazardYellowMat;
+    [-1.6, 1.6].forEach((rx) => {
+      const rPostGeo = new THREE.CylinderGeometry(0.025, 0.025, 1.1, 8);
+      const rPost = new THREE.Mesh(rPostGeo, bRailMat);
+      rPost.position.set(rx, 0.55, 1.9);
+      vaultGroup.add(rPost);
+
+      const rPost2 = new THREE.Mesh(rPostGeo, bRailMat);
+      rPost2.position.set(rx, 0.55, -1.9);
+      vaultGroup.add(rPost2);
+    });
+
+    const topRailGeo = new THREE.CylinderGeometry(0.022, 0.022, 3.8, 8);
+    topRailGeo.rotateX(Math.PI / 2);
+    const railL = new THREE.Mesh(topRailGeo, bRailMat);
+    railL.position.set(-1.6, 1.05, 0);
+    vaultGroup.add(railL);
+
+    this.basementVaultMesh = vaultWalls;
+    this.substationGroup.add(vaultGroup);
+
+    // Concrete Cable Trench with Removable Diamond-Plate Steel Covers leading to Substation
+    const trenchGeo = new THREE.BoxGeometry(5.2, 0.35, 1.2);
+    trenchGeo.translate(6.2, 0.05, 1.0);
+    const trenchMesh = new THREE.Mesh(trenchGeo, darkSteelMat);
+    trenchMesh.receiveShadow = true;
+    this.substationGroup.add(trenchMesh);
+
+    // -------------------------------------------------------------------------
+    // C. ARCHITECTURAL POWERHOUSE BUILDING (SCADA & MV SWITCHGEAR)
+    // -------------------------------------------------------------------------
+    const phGroup = new THREE.Group();
+    phGroup.position.set(8.8, 0, -2.4);
+
+    // Powerhouse Plinth (Dark slate base)
+    const phBaseGeo = new THREE.BoxGeometry(5.4, 0.5, 7.4);
+    phBaseGeo.translate(0, 0.25, 0);
+    const phBase = new THREE.Mesh(phBaseGeo, darkSteelMat);
+    phBase.receiveShadow = true;
+    phGroup.add(phBase);
+
+    // Main Powerhouse Architectural Enclosure (RAL 7035 precast panels)
+    const phBodyGeo = new THREE.BoxGeometry(5.2, 3.2, 7.2);
+    phBodyGeo.translate(0, 2.1, 0);
+    this.powerhouseMesh = new THREE.Mesh(phBodyGeo, buildingWallMat);
+    this.powerhouseMesh.castShadow = true;
+    this.powerhouseMesh.receiveShadow = true;
+    phGroup.add(this.powerhouseMesh);
+
+    // Siemens Gamesa Teal Signature Architectural Stripe
+    const phStripeGeo = new THREE.BoxGeometry(5.26, 0.32, 7.26);
+    phStripeGeo.translate(0, 2.8, 0);
+    const phStripe = new THREE.Mesh(phStripeGeo, sgreTealMat);
+    phGroup.add(phStripe);
+
+    // Parapet Roof Coping Flashing
+    const phRoofGeo = new THREE.BoxGeometry(5.4, 0.18, 7.4);
+    phRoofGeo.translate(0, 3.75, 0);
+    const phRoof = new THREE.Mesh(phRoofGeo, darkSteelMat);
+    phGroup.add(phRoof);
+
+    // Double Steel Security Blast Doors
+    const phDoorGeo = new THREE.BoxGeometry(0.12, 2.4, 1.8);
+    const phDoor = new THREE.Mesh(phDoorGeo, darkSteelMat);
+    phDoor.position.set(-2.64, 1.7, 0.2);
+    phGroup.add(phDoor);
+
+    // Safety Placard on Door
+    const phSignGeo = new THREE.BoxGeometry(0.04, 0.45, 0.7);
+    const phSign = new THREE.Mesh(phSignGeo, hazardYellowMat);
+    phSign.position.set(-2.72, 2.2, 0.2);
+    phGroup.add(phSign);
+
+    // Siemens Gamesa Powerhouse Corporate Plaque
+    const phBadgeGeo = new THREE.BoxGeometry(0.04, 0.25, 1.1);
+    const phBadge = new THREE.Mesh(phBadgeGeo, sgreTealMat);
+    phBadge.position.set(-2.72, 1.55, 0.2);
+    phGroup.add(phBadge);
+
+    // Louvered Air Intake Grille for Switchgear Heat Dissipation
+    const louverGeo = new THREE.BoxGeometry(0.06, 1.2, 2.2);
+    const louverMesh = new THREE.Mesh(louverGeo, darkSteelMat);
+    louverMesh.position.set(-2.64, 2.2, -2.0);
+    phGroup.add(louverMesh);
+
+    // Rooftop HVAC Industrial Chiller Unit
+    const hvacGeo = new THREE.BoxGeometry(1.8, 0.85, 2.4);
+    hvacGeo.translate(0.6, 4.25, -1.0);
+    const hvacMesh = new THREE.Mesh(hvacGeo, darkSteelMat);
+    phGroup.add(hvacMesh);
+
+    // Rooftop SCADA Communications Mast & GPS Receiver
+    const antPoleGeo = new THREE.CylinderGeometry(0.04, 0.05, 3.2, 8);
+    antPoleGeo.translate(-1.8, 5.2, -2.8);
+    const antPole = new THREE.Mesh(antPoleGeo, darkSteelMat);
+    phGroup.add(antPole);
+
+    const dishGeo = new THREE.CylinderGeometry(0.4, 0.05, 0.2, 16);
+    dishGeo.rotateZ(0.6);
+    dishGeo.translate(-1.8, 6.2, -2.8);
+    const dish = new THREE.Mesh(dishGeo, buildingWallMat);
+    phGroup.add(dish);
+
+    // Exterior LED Safety Entrance Floodlight
+    const floodlightGeo = new THREE.BoxGeometry(0.25, 0.15, 0.2);
+    const floodlight = new THREE.Mesh(floodlightGeo, darkSteelMat);
+    floodlight.position.set(-2.7, 3.1, 0.2);
+    phGroup.add(floodlight);
+
+    const phFloodLight = new THREE.PointLight(0xfffaed, 1.4, 14, 1.5);
+    phFloodLight.position.set(-3.2, 2.9, 0.2);
+    phGroup.add(phFloodLight);
+
+    this.substationGroup.add(phGroup);
+
+    // -------------------------------------------------------------------------
+    // D. 33 kV STEP-UP PAD-MOUNTED TRANSFORMER YARD
+    // -------------------------------------------------------------------------
+    const txGroup = new THREE.Group();
+    txGroup.position.set(8.8, 0, 5.2);
+
+    // Reinforced Concrete Oil Containment Bund Basin with Crushed Granite Drainage Ballast
+    const bundGeo = new THREE.BoxGeometry(4.8, 0.45, 4.0);
+    bundGeo.translate(0, 0.22, 0);
+    const bund = new THREE.Mesh(bundGeo, concretePlinthMat);
+    bund.receiveShadow = true;
+    txGroup.add(bund);
+
+    const gravelBedGeo = new THREE.BoxGeometry(4.4, 0.15, 3.6);
+    gravelBedGeo.translate(0, 0.4, 0);
+    const gravelBed = new THREE.Mesh(gravelBedGeo, gravelMat);
+    gravelBed.receiveShadow = true;
+    txGroup.add(gravelBed);
+
+    // Main Heavy Welded Transformer Tank (5,000 kVA rating)
+    const tankGeo = new THREE.BoxGeometry(2.6, 2.2, 2.0);
+    tankGeo.translate(0, 1.55, 0);
+    this.transformerMesh = new THREE.Mesh(tankGeo, transformerTankMat);
+    this.transformerMesh.castShadow = true;
+    this.transformerMesh.receiveShadow = true;
+    txGroup.add(this.transformerMesh);
+
+    // Large Corrugated Radiator Cooling Fin Banks (Left & Right Flanks)
+    [-1.45, 1.45].forEach((rx) => {
+      const radBankGeo = new THREE.BoxGeometry(0.28, 1.8, 1.7);
+      radBankGeo.translate(rx, 1.55, 0);
+      const radBank = new THREE.Mesh(radBankGeo, darkSteelMat);
+      txGroup.add(radBank);
+
+      // Top and bottom oil manifold headers
+      const pipeGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.4, 8);
+      pipeGeo.rotateZ(Math.PI / 2);
+      const topPipe = new THREE.Mesh(pipeGeo, darkSteelMat);
+      topPipe.position.set(rx > 0 ? 1.35 : -1.35, 2.3, 0);
+      txGroup.add(topPipe);
+
+      const botPipe = new THREE.Mesh(pipeGeo, darkSteelMat);
+      botPipe.position.set(rx > 0 ? 1.35 : -1.35, 0.8, 0);
+      txGroup.add(botPipe);
+    });
+
+    // Cylindrical Oil Conservator Expansion Tank (Mounted on top)
+    const consGeo = new THREE.CylinderGeometry(0.32, 0.32, 2.1, 16);
+    consGeo.rotateZ(Math.PI / 2);
+    consGeo.translate(0, 3.05, -0.4);
+    const conservator = new THREE.Mesh(consGeo, transformerTankMat);
+    txGroup.add(conservator);
+
+    // Conservator Structural Steel Support Legs
+    [-0.7, 0.7].forEach((cx) => {
+      const legGeo = new THREE.BoxGeometry(0.08, 0.4, 0.08);
+      const leg = new THREE.Mesh(legGeo, darkSteelMat);
+      leg.position.set(cx, 2.8, -0.4);
+      txGroup.add(leg);
+    });
+
+    // 3x Medium-Voltage 33 kV Glazed Porcelain Shed Bushings
+    for (let b = 0; b < 3; b++) {
+      const bX = -0.6 + b * 0.6;
+      const bGeo = new THREE.CylinderGeometry(0.08, 0.14, 0.85, 12);
+      bGeo.translate(bX, 3.05, 0.4);
+      const bushing = new THREE.Mesh(bGeo, porcelainMat);
+      txGroup.add(bushing);
+
+      // Copper terminal lug and arched conductor lead
+      const lugGeo = new THREE.SphereGeometry(0.05, 8, 8);
+      lugGeo.translate(bX, 3.5, 0.4);
+      const lug = new THREE.Mesh(lugGeo, copperBusMat);
+      txGroup.add(lug);
+
+      // Arched heavy conductor jumper cable
+      const curveGeo = new THREE.CylinderGeometry(0.018, 0.018, 0.7, 6);
+      curveGeo.rotateX(0.7);
+      curveGeo.translate(bX, 3.7, 0.65);
+      const curveMesh = new THREE.Mesh(curveGeo, darkSteelMat);
+      txGroup.add(curveMesh);
+    }
+
+    // 690V Low-Voltage Connection Throat (Enclosed steel bus duct connecting to powerhouse)
+    const throatGeo = new THREE.BoxGeometry(1.2, 0.7, 1.4);
+    throatGeo.translate(0, 1.5, -1.5);
+    const throatMesh = new THREE.Mesh(throatGeo, darkSteelMat);
+    txGroup.add(throatMesh);
+
+    // High-Voltage Surge Arresters on Galvanized Support Stand
+    const saGroup = new THREE.Group();
+    saGroup.position.set(-1.6, 0.4, 1.2);
+    const standGeo = new THREE.BoxGeometry(0.8, 1.2, 0.4);
+    const stand = new THREE.Mesh(standGeo, darkSteelMat);
+    stand.position.y = 0.6;
+    saGroup.add(stand);
+
+    for (let sa = 0; sa < 3; sa++) {
+      const saGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.6, 8);
+      const saMesh = new THREE.Mesh(saGeo, porcelainMat);
+      saMesh.position.set(-0.25 + sa * 0.25, 1.5, 0);
+      saGroup.add(saMesh);
+    }
+    txGroup.add(saGroup);
+
+    // Hazard Safety Placard on Transformer Front
+    const txSignGeo = new THREE.BoxGeometry(0.45, 0.35, 0.02);
+    const txSign = new THREE.Mesh(txSignGeo, hazardYellowMat);
+    txSign.position.set(0, 1.8, 1.02);
+    txGroup.add(txSign);
+
+    this.substationGroup.add(txGroup);
+
+    // -------------------------------------------------------------------------
+    // E. GALVANIZED CHAIN-LINK SECURITY PERIMETER FENCE & ACCESS GATE
+    // -------------------------------------------------------------------------
+    const fenceGroup = new THREE.Group();
+    fenceGroup.position.set(8.8, 0, 1.4);
+
+    const fHalfW = 4.2;
+    const fHalfD = 6.2;
+    const fHeight = 2.4;
+
+    // Corner and Intermediate Fence Posts
+    const postGeo = new THREE.CylinderGeometry(0.04, 0.04, fHeight, 8);
+    const fPostPositions = [
+      [-fHalfW, -fHalfD], [fHalfW, -fHalfD],
+      [-fHalfW, fHalfD], [fHalfW, fHalfD],
+      [-fHalfW, 0], [fHalfW, 0],
+      [0, -fHalfD],
+    ];
+
+    fPostPositions.forEach(([px, pz]) => {
+      const post = new THREE.Mesh(postGeo, darkSteelMat);
+      post.position.set(px, fHeight / 2, pz);
+      fenceGroup.add(post);
+
+      // Angled barbed wire outrigger arms
+      const armGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.45, 6);
+      armGeo.rotateZ(0.6);
+      armGeo.translate(0.15, fHeight + 0.15, 0);
+      const arm = new THREE.Mesh(armGeo, darkSteelMat);
+      arm.position.set(px, 0, pz);
+      fenceGroup.add(arm);
+    });
+
+    // Fence Panels (Semi-transparent wireframe chain-link)
+    const makeFencePanel = (w, pos, rotY = 0) => {
+      const panelGeo = new THREE.PlaneGeometry(w, fHeight - 0.2);
+      panelGeo.translate(0, (fHeight - 0.2) / 2 + 0.1, 0);
+      const panel = new THREE.Mesh(panelGeo, fenceWireMat);
+      panel.position.set(pos[0], 0, pos[1]);
+      panel.rotation.y = rotY;
+      fenceGroup.add(panel);
+
+      const railGeo = new THREE.CylinderGeometry(0.025, 0.025, w, 8);
+      railGeo.rotateZ(Math.PI / 2);
+      const topR = new THREE.Mesh(railGeo, darkSteelMat);
+      topR.position.set(pos[0], fHeight - 0.05, pos[1]);
+      topR.rotation.y = rotY;
+      fenceGroup.add(topR);
+    };
+
+    makeFencePanel(fHalfW * 2, [0, -fHalfD], 0); // Back wall
+    makeFencePanel(fHalfD * 2, [-fHalfW, 0], Math.PI / 2); // Left wall
+    makeFencePanel(fHalfD * 2, [fHalfW, 0], Math.PI / 2); // Right wall
+    makeFencePanel(fHalfW * 0.9, [-fHalfW * 0.55, fHalfD], 0); // Front wall left
+    makeFencePanel(fHalfW * 0.9, [fHalfW * 0.55, fHalfD], 0); // Front wall right
+
+    // Double Swinging Security Gate
+    const gateGeo = new THREE.BoxGeometry(1.6, 2.0, 0.06);
+    gateGeo.translate(0, 1.1, 0);
+    const gateMesh = new THREE.Mesh(gateGeo, fenceWireMat);
+    gateMesh.position.set(0, 0, fHalfD);
+    fenceGroup.add(gateMesh);
+
+    // Gate Warning Hazard Signs
+    const gSignGeo = new THREE.BoxGeometry(0.6, 0.4, 0.03);
+    const gSign = new THREE.Mesh(gSignGeo, hazardYellowMat);
+    gSign.position.set(0, 1.4, fHalfD + 0.05);
+    fenceGroup.add(gSign);
+
+    this.substationGroup.add(fenceGroup);
+
+    // -------------------------------------------------------------------------
+    // F. TECHNICAL COMPONENT REGISTRATION (INTERACTIVE 3D INSPECTION)
+    // -------------------------------------------------------------------------
+    this.registerInspectable(this.transformerMesh, {
+      title: '5,000 kVA 33 kV Medium-Voltage Step-Up Transformer',
+      tag: 'SUBSTATION TRANSFORMER',
+      desc: 'Oil-immersed pad-mounted step-up transformer converting generator 690 V output to 33,000 V medium-voltage for long-distance collection grid export. Features ONAN corrugated cooling fins, Buchholz protection relay, and high-voltage porcelain bushings.',
+      specs: [
+        { k: 'Rated Capacity', v: '5,000 kVA (5.0 MVA)' },
+        { k: 'Voltage Ratio', v: '690 V / 33,000 V' },
+        { k: 'Cooling Method', v: 'ONAN Corrugated Fins' },
+        { k: 'Efficiency', v: '99.1% High-Efficiency' }
+      ]
+    });
+
+    this.registerInspectable(this.powerhouseMesh, {
+      title: 'Siemens Gamesa WTG-01 Powerhouse & MV Switchgear Facility',
+      tag: 'CONTROL POWERHOUSE',
+      desc: 'Architectural precast concrete powerhouse containing medium-voltage SF6 gas-insulated switchgear (GIS), SCADA grid synchronization automation, industrial HVAC cooling, and utility collector protections.',
+      specs: [
+        { k: 'Structure', v: 'Precast Architectural Panels' },
+        { k: 'Switchgear', v: '33 kV SF6 Gas-Insulated (GIS)' },
+        { k: 'SCADA Interconnect', v: 'Fiber Optic IEC 61850' },
+        { k: 'Auxiliary Power', v: '400 V / 230 V UPS Backup' }
+      ]
+    });
+
+    this.registerInspectable(this.basementVaultMesh, {
+      title: 'Foundation Basement Cable Vault & Inverter Chamber',
+      tag: 'SUBTERRANEAN BASEMENT',
+      desc: 'Deep subterranean foundation vault housing 690 V 4-quadrant IGBT frequency converter cabinets, heavy electrolytic copper busbars, and underground medium-voltage export cable penetrations.',
+      specs: [
+        { k: 'Vault Depth', v: '-3.2 m Subterranean' },
+        { k: 'Power Electronics', v: 'Liquid-Cooled 4Q Inverters' },
+        { k: 'Busbar Rating', v: '4,800 A Electrolytic Copper' },
+        { k: 'Foundation Type', v: 'Reinforced Gravity Base' }
+      ]
+    });
+
+    this.scene.add(this.substationGroup);
   }
 
   buildTowerPortalStairs(baseRadius) {
