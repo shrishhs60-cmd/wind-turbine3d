@@ -122,13 +122,12 @@ export class TurbineBuilder {
     this.setupLighting();
     this.buildAtmosphericSky();
     this.buildMountainRidgeTerrain();
-    this.buildValleyCloudSea();
     this.buildDistantMountainPeaks();
     this.buildMetMastAnemometerTower();
     this.buildWindTurbine();
     this.buildBasementSubstationPowerhouse();
     this.buildRidgeTurbineString();
-    this.buildLivingBeingsEcosystem(); // Highland raptors, ponies, sheep, technicians & vegetation
+    this.buildLivingBeingsEcosystem(); // Soaring gulls/raptors, technicians & service truck
     this.buildStreamlineParticles();
     this.buildTipVortexSystem();
     this.buildBrakeSparksSystem();
@@ -139,58 +138,25 @@ export class TurbineBuilder {
   }
 
   /**
-   * Mountain Ridge Spine Centerline: x(z)
-   * A gentle natural sweeping S-curve curving through the mountain pass
+   * Utility Corridor Centerline: x(z)
+   * Straight, neat utility alignment along the access roadway
    */
   getRidgeX(z) {
-    return Math.sin(z * 0.0035) * 45.0 - z * 0.02;
+    return 0.0;
   }
 
   /**
-   * Mountain Ridge Crest Elevation: y_crest(z)
+   * Plain Flat Terrain Elevation: exactly 0.0m everywhere
    */
   getRidgeCrestY(z) {
-    return Math.cos(z * 0.0028) * 8.0 - 8.0 + Math.sin(z * 0.008) * 3.5;
+    return 0.0;
   }
 
   /**
-   * Elevation formula for mountain ridge with steep valley drop-offs and flat turbine pads
+   * Plain Flat Ground Elevation: exactly 0.0m everywhere
    */
   getTerrainHeight(x, z) {
-    const ridgeX = this.getRidgeX(z);
-    const crestY = this.getRidgeCrestY(z);
-    const lateralDist = Math.abs(x - ridgeX);
-
-    // Flat circular foundation pad for hero turbine at (0, 0)
-    if (Math.hypot(x, z) < 18.0) {
-      return 0.0;
-    }
-
-    // Flat circular foundation pads for auxiliary ridge turbines
-    const auxZ = [-100, -200, -310, -430, -560, -700, -850, -1020];
-    for (let i = 0; i < auxZ.length; i++) {
-      const pz = auxZ[i];
-      const px = this.getRidgeX(pz);
-      if (Math.hypot(x - px, z - pz) < 16.0) {
-        return this.getRidgeCrestY(pz);
-      }
-    }
-
-    // Mountain Ridge Crest zone (width ~ 24m)
-    if (lateralDist <= 12.0) {
-      const crestDrop = Math.pow(lateralDist / 12.0, 2) * 1.5;
-      const trailMicroNoise = Math.sin(z * 0.06) * 0.22;
-      return crestY - crestDrop + trailMicroNoise;
-    }
-
-    // Steep lateral valley drop-off on both flanks into deep cloud-filled valleys
-    const d = lateralDist - 12.0;
-    const cragNoise = Math.sin(x * 0.035 + z * 0.02) * 3.2 + Math.cos(x * 0.065 - z * 0.04) * 1.8;
-    const slopeDrop = Math.pow(d / 22.0, 1.45) * 26.0;
-    const y = crestY - 1.5 - slopeDrop + cragNoise;
-
-    // Clamped at valley floor (-50.0m, submerged under cloud sea at -26.0m)
-    return Math.max(-50.0, y);
+    return 0.0;
   }
 
   // =========================================================================
@@ -737,132 +703,139 @@ export class TurbineBuilder {
     canvas.height = 2048;
     const ctx = canvas.getContext('2d');
 
-    // 1. Natural Highland Moorland Heather Base Split Across Mountain Ridge
-    // Left slope: radiant golden-orange dawn heather & moorland
-    // Right slope: shadowed dark mossy green, slate crags & peat
-    const baseGrad = ctx.createLinearGradient(0, 0, 2048, 0);
-    baseGrad.addColorStop(0.0, '#7c431b'); // Sunlit golden-burnt heather
-    baseGrad.addColorStop(0.38, '#a86729');
-    baseGrad.addColorStop(0.48, '#bf7b32'); // Crest transition
-    baseGrad.addColorStop(0.56, '#495632'); // Shaded mossy slope
-    baseGrad.addColorStop(0.72, '#2b3922');
-    baseGrad.addColorStop(1.0, '#1c281a');  // Dark peat & slate
-    ctx.fillStyle = baseGrad;
+    // 1. Pristine, manicured utility wind park green turf
+    const lawnGrad = ctx.createLinearGradient(0, 0, 0, 2048);
+    lawnGrad.addColorStop(0.0, '#386632');
+    lawnGrad.addColorStop(0.5, '#42753a');
+    lawnGrad.addColorStop(1.0, '#3a6833');
+    ctx.fillStyle = lawnGrad;
     ctx.fillRect(0, 0, 2048, 2048);
 
-    // Multi-frequency organic heather blooms, lichen, and slate crags (26,000 speckles)
-    const heatherPalette = [
-      '#a66324', '#bf7a30', '#d6913c', '#e5a84b', '#8f4f1d', // Golden-amber heather
-      '#6b3a16', '#542d10', '#3b200b',                         // Deep moor peat
-      '#42562d', '#2c3c1e', '#596d3c',                         // Shadowed moss
-      '#5e574c', '#756e62', '#433d36', '#877f72'              // Exposed slate/granite crags
-    ];
-    for (let p = 0; p < 26000; p++) {
+    // Subtle, clean, uniform micro-grass texture (neat lawn stippling)
+    const grassDots = ['#498240', '#325d2c', '#4e8a44', '#3c6c35'];
+    for (let p = 0; p < 18000; p++) {
       const px = Math.random() * 2048;
       const py = Math.random() * 2048;
-      const rad = 1.5 + Math.random() * 7.5;
-      // Bias colors based on left vs right side
-      let c;
-      if (px < 1000) {
-        c = heatherPalette[Math.floor(Math.random() * 8)];
-      } else {
-        c = heatherPalette[4 + Math.floor(Math.random() * (heatherPalette.length - 4))];
-      }
-      ctx.fillStyle = c;
+      const r = 1.0 + Math.random() * 2.2;
+      ctx.fillStyle = grassDots[p % 4];
       ctx.beginPath();
-      ctx.arc(px, py, rad, 0, Math.PI * 2);
+      ctx.arc(px, py, r, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // 2. Unpaved Highland Dirt & Gravel Service Road Winding Along Ridge Crest
-    // Maps World (X, Z) to Texture (U, V)
-    const worldToPx = (wx) => (wx / 2000 + 0.5) * 2048;
-    const worldToPy = (wz) => (0.5 - wz / 2000) * 2048;
+    // World coordinate helpers (2400m x 2400m plane)
+    const worldToPx = (wx) => (wx / 2400 + 0.5) * 2048;
+    const worldToPy = (wz) => (0.5 - wz / 2400) * 2048;
 
-    // Draw continuous gravel road from z = +140 down to z = -1080
-    const roadPoints = [];
-    for (let rz = 140; rz >= -1080; rz -= 8) {
-      const rx = this.getRidgeX(rz) + 3.2; // Runs slightly to the right of turbines along crest
-      roadPoints.push({ x: worldToPx(rx), y: worldToPy(rz) });
-    }
+    // 2. Straight Modern Asphalt Service Road (runs cleanly along x = 8.5m)
+    const roadX = 8.5;
+    const roadPx = worldToPx(roadX);
+    const roadTopPy = worldToPy(150);
+    const roadBotPy = worldToPy(-1150);
 
-    if (roadPoints.length > 1) {
-      // Gravel shoulder
+    // Gravel road shoulders (width ~ 11.5m -> ~9.8 px)
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(roadPx - 5.5, roadTopPy, 11, roadBotPy - roadTopPy);
+
+    // Smooth dark asphalt roadway (width ~ 7.0m -> ~6.0 px)
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(roadPx - 3.2, roadTopPy, 6.4, roadBotPy - roadTopPy);
+
+    // Crisp white solid road edge lines
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    ctx.moveTo(roadPx - 3.0, roadTopPy);
+    ctx.lineTo(roadPx - 3.0, roadBotPy);
+    ctx.moveTo(roadPx + 3.0, roadTopPy);
+    ctx.lineTo(roadPx + 3.0, roadBotPy);
+    ctx.stroke();
+
+    // 3. Hero Turbine Hardstand & Substation Maintenance Apron
+    // Main compacted slate crane pad / hardstand
+    const padMinX = worldToPx(-18);
+    const padMaxX = worldToPx(18);
+    const padMinZ = worldToPy(22);
+    const padMaxZ = worldToPy(-16);
+
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.roundRect(padMinX, padMinZ, padMaxX - padMinX, padMaxZ - padMinZ, 8);
+    ctx.fill();
+
+    // Circular concrete maintenance apron around hero turbine plinth (radius 16m)
+    const heroPx = worldToPx(0);
+    const heroPy = worldToPy(0);
+    const apronRad = (16 / 2400) * 2048;
+
+    ctx.fillStyle = '#64748b';
+    ctx.beginPath();
+    ctx.arc(heroPx, heroPy, apronRad, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner smooth concrete circle (radius 11m)
+    const innerRad = (11 / 2400) * 2048;
+    ctx.fillStyle = '#94a3b8';
+    ctx.beginPath();
+    ctx.arc(heroPx, heroPy, innerRad, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Substation & Powerhouse Crushed Granite Drainage Bed at x = 8.8, z = 1.4
+    const subPxMin = worldToPx(4.5);
+    const subPxMax = worldToPx(13.5);
+    const subPyMin = worldToPy(9.0);
+    const subPyMax = worldToPy(-6.5);
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.roundRect(subPxMin, subPyMin, subPxMax - subPxMin, subPyMax - subPyMin, 5);
+    ctx.fill();
+
+    // Safety yellow hatched pedestrian walkway connecting turbine stairs to powerhouse & transformer
+    ctx.strokeStyle = '#eab308';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(worldToPx(0), worldToPy(3.5));
+    ctx.lineTo(worldToPx(4.8), worldToPy(3.5));
+    ctx.lineTo(worldToPx(4.8), worldToPy(-2.2));
+    ctx.stroke();
+
+    // Dedicated service truck parking bay markings at x = 12.0, z = 10.0
+    const parkPx = worldToPx(12.0);
+    const parkPy = worldToPy(10.0);
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 0.8;
+    ctx.strokeRect(parkPx - 3.5, parkPy - 4.5, 7, 9);
+
+    // 4. Auxiliary Turbines String Hardstands (z = -100, -200, -310, -430, -560, -700, -850, -1020)
+    const ridgeZ = [-100, -200, -310, -430, -560, -700, -850, -1020];
+    const padR = (16 / 2400) * 2048;
+    const innerR = (10 / 2400) * 2048;
+
+    ridgeZ.forEach((zPos) => {
+      const cx = worldToPx(0);
+      const cy = worldToPy(zPos);
+
+      // Connector spur road from main road (x = 8.5) to turbine pad (x = 0)
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(cx, cy - 2.5, worldToPx(8.5) - cx, 5);
+
+      // Hardstand gravel pad
+      ctx.fillStyle = '#475569';
       ctx.beginPath();
-      ctx.moveTo(roadPoints[0].x, roadPoints[0].y);
-      for (let i = 1; i < roadPoints.length; i++) {
-        ctx.lineTo(roadPoints[i].x, roadPoints[i].y);
-      }
-      ctx.strokeStyle = 'rgba(182, 172, 155, 0.72)';
-      ctx.lineWidth = 26;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.stroke();
-
-      // Compacted earth / dirt roadway
-      ctx.beginPath();
-      ctx.moveTo(roadPoints[0].x, roadPoints[0].y);
-      for (let i = 1; i < roadPoints.length; i++) {
-        ctx.lineTo(roadPoints[i].x, roadPoints[i].y);
-      }
-      ctx.strokeStyle = '#544635';
-      ctx.lineWidth = 17;
-      ctx.stroke();
-
-      // Left vehicle tyre rut
-      ctx.beginPath();
-      ctx.moveTo(roadPoints[0].x - 4, roadPoints[0].y);
-      for (let i = 1; i < roadPoints.length; i++) {
-        ctx.lineTo(roadPoints[i].x - 4, roadPoints[i].y);
-      }
-      ctx.strokeStyle = 'rgba(58, 46, 32, 0.65)';
-      ctx.lineWidth = 3.5;
-      ctx.stroke();
-
-      // Right vehicle tyre rut
-      ctx.beginPath();
-      ctx.moveTo(roadPoints[0].x + 4, roadPoints[0].y);
-      for (let i = 1; i < roadPoints.length; i++) {
-        ctx.lineTo(roadPoints[i].x + 4, roadPoints[i].y);
-      }
-      ctx.strokeStyle = 'rgba(58, 46, 32, 0.65)';
-      ctx.lineWidth = 3.5;
-      ctx.stroke();
-    }
-
-    // 3. Compacted Circular Hardstand Gravel Pads for All Turbines
-    const padLocations = [
-      { x: 0, z: 0, r: 38 },
-      { x: this.getRidgeX(-100), z: -100, r: 32 },
-      { x: this.getRidgeX(-200), z: -200, r: 30 },
-      { x: this.getRidgeX(-310), z: -310, r: 28 },
-      { x: this.getRidgeX(-430), z: -430, r: 26 },
-      { x: this.getRidgeX(-560), z: -560, r: 25 },
-      { x: this.getRidgeX(-700), z: -700, r: 24 },
-      { x: this.getRidgeX(-850), z: -850, r: 22 },
-      { x: this.getRidgeX(-1020), z: -1020, r: 20 },
-    ];
-
-    padLocations.forEach((pad) => {
-      const cx = worldToPx(pad.x);
-      const cy = worldToPy(pad.z);
-
-      const pGrad = ctx.createRadialGradient(cx, cy, 5, cx, cy, pad.r);
-      pGrad.addColorStop(0.0, 'rgba(152, 145, 134, 0.95)');
-      pGrad.addColorStop(0.65, 'rgba(128, 120, 110, 0.88)');
-      pGrad.addColorStop(0.9, 'rgba(96, 88, 78, 0.55)');
-      pGrad.addColorStop(1.0, 'rgba(70, 60, 48, 0.0)');
-
-      ctx.fillStyle = pGrad;
-      ctx.beginPath();
-      ctx.arc(cx, cy, pad.r, 0, Math.PI * 2);
+      ctx.arc(cx, cy, padR, 0, Math.PI * 2);
       ctx.fill();
 
-      // Concrete plinth ring boundary
-      ctx.strokeStyle = '#d4a373';
-      ctx.lineWidth = 2.5;
+      // Concrete plinth ring
+      ctx.fillStyle = '#94a3b8';
       ctx.beginPath();
-      ctx.arc(cx, cy, pad.r * 0.42, 0, Math.PI * 2);
+      ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // White boundary safety ring
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.arc(cx, cy, padR, 0, Math.PI * 2);
       ctx.stroke();
     });
 
@@ -969,43 +942,45 @@ export class TurbineBuilder {
     this.mountainRidgeGroup = new THREE.Group();
     this.onshoreGroup = this.mountainRidgeGroup;
 
-    // 2000m x 2000m high-resolution terrain mesh
-    const terrainGeo = new THREE.PlaneGeometry(2000, 2000, 192, 192);
+    // 2400m x 2400m perfectly flat, clean ground plane
+    const terrainGeo = new THREE.PlaneGeometry(2400, 2400, 32, 32);
     terrainGeo.rotateX(-Math.PI / 2);
-
-    const pos = terrainGeo.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i);
-      const z = pos.getZ(i);
-      pos.setY(i, this.getTerrainHeight(x, z));
-    }
     terrainGeo.computeVertexNormals();
 
     const terrainMat = new THREE.MeshStandardMaterial({
       map: this.generateMountainRidgeTexture(),
-      roughness: 0.94,
-      metalness: 0.03,
+      roughness: 0.88,
+      metalness: 0.04,
       flatShading: false,
     });
 
     const terrain = new THREE.Mesh(terrainGeo, terrainMat);
+    terrain.position.y = 0.0;
     terrain.receiveShadow = true;
     this.mountainRidgeGroup.add(terrain);
 
-    // Foundation Octagonal Concrete Plinth with 45° Chamfer for hero turbine at (0, 0)
-    const plinthGeo = new THREE.CylinderGeometry(7.6, 8.4, 2.0, 8);
+    // Foundation Octagonal Concrete Base Footing (Step 1: y = 0.0 to 0.6)
+    const footingGeo = new THREE.CylinderGeometry(7.6, 8.4, 0.6, 8);
+    footingGeo.translate(0, 0.3, 0);
     const plinthMat = new THREE.MeshStandardMaterial({
       color: 0x828c9b,
       roughness: 0.88,
       metalness: 0.08,
     });
-    const plinth = new THREE.Mesh(plinthGeo, plinthMat);
-    plinth.position.y = 1.0;
+    const plinth = new THREE.Mesh(footingGeo, plinthMat);
     plinth.receiveShadow = true;
     plinth.castShadow = true;
     this.mountainRidgeGroup.add(plinth);
 
-    // 160 Pre-tensioned Foundation Anchor Studs Ring
+    // Foundation Cylindrical Pedestal (Step 2: y = 0.6 to 2.0)
+    const pedGeo = new THREE.CylinderGeometry(4.6, 5.0, 1.4, 32);
+    pedGeo.translate(0, 1.3, 0);
+    const pedestal = new THREE.Mesh(pedGeo, plinthMat);
+    pedestal.receiveShadow = true;
+    pedestal.castShadow = true;
+    this.mountainRidgeGroup.add(pedestal);
+
+    // 64 Pre-tensioned Foundation Anchor Studs Ring
     const boltCircleGroup = new THREE.Group();
     boltCircleGroup.position.y = 2.02;
     const boltRadius = 2.75;
@@ -1020,37 +995,17 @@ export class TurbineBuilder {
     }
     this.mountainRidgeGroup.add(boltCircleGroup);
 
-    // Weathered rustic wooden pasture fence along the ridge flank (visible in reference photo)
-    const fenceMat = new THREE.MeshStandardMaterial({ color: 0x3d2b1f, roughness: 0.92 });
-    const postGeo = new THREE.CylinderGeometry(0.08, 0.09, 1.4, 6);
-    postGeo.translate(0, 0.7, 0);
-
-    for (let fz = 60; fz >= -650; fz -= 10) {
-      const fx = this.getRidgeX(fz) + 8.5; // Along the right edge of the crest trail
-      const fy = this.getTerrainHeight(fx, fz);
-      if (fy > -22.0) {
-        const post = new THREE.Mesh(postGeo, fenceMat);
-        post.position.set(fx, fy, fz);
-        post.castShadow = true;
-        this.mountainRidgeGroup.add(post);
-      }
-    }
-
     this.registerInspectable(plinth, {
-      title: 'Siemens Gamesa Mountain Gravity Foundation & Anchor Ring',
+      title: 'Siemens Gamesa Gravity Foundation & Anchor Ring',
       tag: 'SIEMENS GAMESA CIVIL',
-      desc: 'Highland reinforced concrete gravity foundation anchored directly into bedrock. 160 pre-tensioned M42 anchor studs securely clamp the base tower flange against high mountain wind shear.',
+      desc: 'Reinforced concrete stepped gravity foundation on engineered sub-base. 160 pre-tensioned M42 anchor studs securely clamp the base tower flange against high aerodynamic shear loads.',
       specs: [
         { k: 'Footprint', v: 'Ø 16.8 m' },
         { k: 'Concrete Mass', v: '~1,650 Tons' },
         { k: 'Anchor Bolts', v: '160x M42 (10.9)' },
-        { k: 'Bedrock Anchor', v: 'Rock Socketed Piles' }
+        { k: 'Foundation Type', v: 'Stepped Gravity Base' }
       ]
     });
-
-    this.buildSubstationTransformer();
-    this.buildVolumetricGrassMeadow();
-    this.buildScatteredRockBoulders();
 
     this.scene.add(this.mountainRidgeGroup);
   }
@@ -1414,7 +1369,7 @@ export class TurbineBuilder {
     // 1. The Iconic Triangular Pyramid Mountain Summit on Right Horizon (Azimuth ~50°)
     // Exactly matches the prominent pyramid peak visible in the user's reference photograph!
     const pyramidGroup = new THREE.Group();
-    pyramidGroup.position.set(480, -32, -720);
+    pyramidGroup.position.set(480, 0, -720);
 
     // Sharp pyramid cone with 7 irregular craggy facets
     const peakGeo = new THREE.ConeGeometry(190, 235, 7);
@@ -1754,25 +1709,9 @@ export class TurbineBuilder {
     });
 
     // -------------------------------------------------------------------------
-    // A. REINFORCED CONCRETE FOUNDATION BASEMENT & PLINTH (UNDER TOWER)
+    // A. FOUNDATION CLAMP RING & CABLE INTERCONNECTS
     // -------------------------------------------------------------------------
-    // Upper Tower Plinth Collar (elevated 2.0m from terrain)
-    const upperPlinthGeo = new THREE.CylinderGeometry(4.8, 5.4, 2.1, 32);
-    upperPlinthGeo.translate(0, 1.05, 0);
-    const upperPlinth = new THREE.Mesh(upperPlinthGeo, concretePlinthMat);
-    upperPlinth.receiveShadow = true;
-    upperPlinth.castShadow = true;
-    this.substationGroup.add(upperPlinth);
-
-    // Octagonal Spread Footing Foundation (Sub-base distribution)
-    const footingGeo = new THREE.CylinderGeometry(8.2, 8.8, 1.2, 8);
-    footingGeo.translate(0, -0.6, 0);
-    const footing = new THREE.Mesh(footingGeo, concreteFootingMat);
-    footing.receiveShadow = true;
-    footing.castShadow = true;
-    this.substationGroup.add(footing);
-
-    // High-Tensile Foundation Anchor Bolt Ring
+    // High-Tensile Foundation Flange Clamp Collar
     const boltRingGeo = new THREE.TorusGeometry(2.72, 0.08, 8, 48);
     boltRingGeo.rotateX(Math.PI / 2);
     boltRingGeo.translate(0, 2.02, 0);
@@ -3301,10 +3240,8 @@ export class TurbineBuilder {
    */
   buildLivingBeingsEcosystem() {
     this.buildSoaringBirdsFlock();
-    this.buildGrazingAnimals();
     this.buildMaintenanceCrew();
     this.buildServiceVehicle();
-    this.buildLandscapeVegetation();
   }
 
   /**

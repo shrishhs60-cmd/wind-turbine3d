@@ -227,9 +227,9 @@ class AeroTurbineApp {
         this.controls.autoRotate = false;
         break;
       case 'ridge':
-        // Viewpoint framing the windmill in foreground while showcasing the sweeping mountain ridge
+        // Panoramic viewpoint framing the windmill and the flat utility array string
         targetPos = new THREE.Vector3(-36.0, 52.0, 90.0);
-        lookAt = new THREE.Vector3(-15.0, 75.0, -80.0);
+        lookAt = new THREE.Vector3(0.0, 50.0, -80.0);
         this.controls.autoRotate = false;
         break;
       case 'substation':
