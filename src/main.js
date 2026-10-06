@@ -91,7 +91,11 @@ class AeroTurbineApp {
     this.builder = new TurbineBuilder(this.scene, this.renderer);
     this.builder.buildScene();
     this.builder.setTimeOfDay('day');
-    this.setCameraPreset('ridge');
+    this.setCameraPreset('hero');
+
+    this.isRotorPaused = false;
+    this.inspectorModeEnabled = false;
+    document.body.classList.add('free-view-active');
 
     this.chartManager = new ChartManager('power-curve-chart', this.physics);
 
@@ -204,21 +208,22 @@ class AeroTurbineApp {
         lookAt = new THREE.Vector3(0.0, 72.0, 0.0);
         this.controls.autoRotate = false;
         break;
-      case 'nacelle':
-        // Close-up drivetrain inspection view directly beside the observation cutaway
-        targetPos = new THREE.Vector3(8.5, hubY + 3.8, -4.5);
-        lookAt = new THREE.Vector3(0, hubY + 1.2, -4.0);
+      case 'front':
+        // Direct frontal elevation view of rotor plane and tower
+        targetPos = new THREE.Vector3(0.0, 75.0, 150.0);
+        lookAt = new THREE.Vector3(0.0, 72.0, 0.0);
         this.controls.autoRotate = false;
         break;
-      case 'hub':
-        // Front rotor hub and pitch actuator view
-        targetPos = new THREE.Vector3(12, hubY + 2.5, 14);
-        lookAt = new THREE.Vector3(0, hubY + 1.2, 4.0);
+      case 'side':
+        // Side aerodynamic profile view of nacelle, hub tilt, and tower
+        targetPos = new THREE.Vector3(-145.0, 75.0, 0.0);
+        lookAt = new THREE.Vector3(0.0, 72.0, 0.0);
         this.controls.autoRotate = false;
         break;
-      case 'wingtip':
-        targetPos = new THREE.Vector3(-14, hubY + 58, 12);
-        lookAt = new THREE.Vector3(0, hubY + 46, 2);
+      case 'ground':
+        // Dramatic low-angle view looking up from the foundation
+        targetPos = new THREE.Vector3(-45.0, 10.0, 65.0);
+        lookAt = new THREE.Vector3(0.0, 85.0, 0.0);
         this.controls.autoRotate = false;
         break;
       case 'ridge':
@@ -234,21 +239,10 @@ class AeroTurbineApp {
         targetPos = null;
         lookAt = null;
         break;
-      case 'tower':
-        targetPos = new THREE.Vector3(14, 6, 20);
-        lookAt = new THREE.Vector3(3, 3, 3);
-        this.controls.autoRotate = false;
-        break;
-      case 'aerial':
-        targetPos = new THREE.Vector3(-220, 240, 250);
-        lookAt = new THREE.Vector3(0, 60, 0);
-        this.controls.autoRotate = false;
-        break;
       default:
-        targetPos = new THREE.Vector3(-105, 112, 145);
-        lookAt = new THREE.Vector3(0, hubY, 0);
-        this.controls.autoRotate = true;
-        this.controls.autoRotateSpeed = 0.65;
+        targetPos = new THREE.Vector3(-82.0, 92.0, 118.0);
+        lookAt = new THREE.Vector3(0.0, 72.0, 0.0);
+        this.controls.autoRotate = false;
     }
 
     this.camTargetPos = targetPos;
@@ -433,6 +427,38 @@ class AeroTurbineApp {
       });
     }
 
+    // 8c. Rotor Spin Play / Pause Toggle
+    const btnToggleSpin = document.getElementById('btn-toggle-rotor-spin');
+    const spinIcon = document.getElementById('spin-btn-icon');
+    const spinText = document.getElementById('spin-btn-text');
+    if (btnToggleSpin) {
+      btnToggleSpin.addEventListener('click', () => {
+        this.isRotorPaused = !this.isRotorPaused;
+        if (this.isRotorPaused) {
+          btnToggleSpin.classList.add('active');
+          if (spinIcon) spinIcon.textContent = '▶';
+          if (spinText) spinText.textContent = 'Spin Rotor';
+        } else {
+          btnToggleSpin.classList.remove('active');
+          if (spinIcon) spinIcon.textContent = '⏸';
+          if (spinText) spinText.textContent = 'Pause Rotor';
+        }
+      });
+    }
+
+    // 8d. Clean Free View (Hide / Show Side Panels) Toggle
+    const btnToggleFreeView = document.getElementById('btn-toggle-free-view');
+    if (btnToggleFreeView) {
+      btnToggleFreeView.addEventListener('click', () => {
+        const isFree = document.body.classList.toggle('free-view-active');
+        if (isFree) {
+          btnToggleFreeView.classList.add('active');
+        } else {
+          btnToggleFreeView.classList.remove('active');
+        }
+      });
+    }
+
     // 9b. SCADA Scope Switcher (Single Turbine vs Wind Farm Fleet)
     const btnScopeTurbine = document.getElementById('btn-scope-turbine');
     const btnScopeFarm = document.getElementById('btn-scope-farm');
@@ -604,6 +630,7 @@ class AeroTurbineApp {
    * Raycasting to identify clicked turbine components
    */
   onSceneClick(event) {
+    if (!this.inspectorModeEnabled) return;
     const rect = this.canvas.getBoundingClientRect();
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -881,6 +908,9 @@ class AeroTurbineApp {
     this.hotspotsContainer = document.getElementById('hotspot-overlay-container');
     if (!this.hotspotsContainer) return;
 
+    this.hotspotsEnabled = false;
+    this.hotspotsContainer.style.display = 'none';
+
     const ridgeX_WTG2 = this.builder ? this.builder.getRidgeX(-100) : -13;
     const ridgeY_WTG2 = this.builder ? this.builder.getTerrainHeight(ridgeX_WTG2, -100) : -8;
     const hubH = this.builder ? this.builder.HUB_HEIGHT : 107.5;
@@ -1060,13 +1090,14 @@ class AeroTurbineApp {
     }
 
     // Step Physics Simulation
-    this.physics.update(dt, this.gustFactor);
+    const effectiveDt = this.isRotorPaused ? 0 : dt;
+    this.physics.update(effectiveDt, this.gustFactor);
 
     // Update 3D Visuals & Rotations
-    this.builder.updateAnimation(this.physics, dt, time);
+    this.builder.updateAnimation(this.physics, effectiveDt, time);
 
     // Modulate Synthesized Audio
-    this.sound.update(this.physics, dt);
+    this.sound.update(this.physics, effectiveDt);
 
     // Camera preset smooth interpolation
     if (this.camTargetPos && this.camTargetLookAt) {
@@ -1076,15 +1107,6 @@ class AeroTurbineApp {
       if (this.camera.position.distanceTo(this.camTargetPos) < 0.2) {
         this.camTargetPos = null;
         this.camTargetLookAt = null;
-      }
-    }
-
-    // Camera auto-rotate resuming when in Hero Orbit
-    if (this.currentPreset === 'hero') {
-      if (this.isUserInteracting) {
-        this.controls.autoRotate = false;
-      } else if (performance.now() - this.lastUserInteractTime > 1500) {
-        this.controls.autoRotate = true;
       }
     }
 

@@ -1791,58 +1791,13 @@ export class TurbineBuilder {
     this.portShellMesh.receiveShadow = true;
     shellGroup.add(this.portShellMesh);
 
-    // 2. Starboard Lower Hull Wall (Solid fiberglass up to observation sill)
-    const stbdBaseGeo = new THREE.BoxGeometry(2.05, 1.1, 14.2);
-    const stbdBase = new THREE.Mesh(stbdBaseGeo, this.nacelleShellMaterial);
-    stbdBase.position.set(1.025, -1.35, 0);
-    stbdBase.castShadow = true;
-    stbdBase.receiveShadow = true;
-    shellGroup.add(stbdBase);
-
-    // Starboard Rear Service Enclosure (Behind observation window)
-    const stbdRearGeo = new THREE.BoxGeometry(2.05, 2.7, 3.4);
-    const stbdRear = new THREE.Mesh(stbdRearGeo, this.nacelleShellMaterial);
-    stbdRear.position.set(1.025, 0.55, -5.4);
-    stbdRear.castShadow = true;
-    stbdRear.receiveShadow = true;
-    shellGroup.add(stbdRear);
-
-    // Starboard Front Nose Corner (In front of observation window)
-    const stbdFrontGeo = new THREE.BoxGeometry(2.05, 2.7, 1.4);
-    const stbdFront = new THREE.Mesh(stbdFrontGeo, this.nacelleShellMaterial);
-    stbdFront.position.set(1.025, 0.55, 6.4);
-    stbdFront.castShadow = true;
-    stbdFront.receiveShadow = true;
-    shellGroup.add(stbdFront);
-
-    // 3. Starboard Drivetrain Observation Window: Crystal-clear aerospace acrylic!
-    // Seamlessly framed flush window revealing the entire running mechanical drivetrain!
-    const windowMat = new THREE.MeshStandardMaterial({
-      color: 0xe0f7fa,
-      roughness: 0.05,
-      metalness: 0.08,
-      transparent: true,
-      opacity: 0.16,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-    });
-
-    const windowGeo = new THREE.BoxGeometry(0.06, 2.6, 9.4);
-    this.observationWindowMesh = new THREE.Mesh(windowGeo, windowMat);
-    this.observationWindowMesh.position.set(2.02, 0.55, 0.9);
-    shellGroup.add(this.observationWindowMesh);
-
-    // Sleek chamfered window surround gasket (carbon anthracite)
-    const gasketMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7, metalness: 0.3 });
-    const topGasketGeo = new THREE.BoxGeometry(0.09, 0.08, 9.6);
-    const topGasket = new THREE.Mesh(topGasketGeo, gasketMat);
-    topGasket.position.set(2.03, 1.86, 0.9);
-    shellGroup.add(topGasket);
-
-    const botGasketGeo = new THREE.BoxGeometry(0.09, 0.08, 9.6);
-    const botGasket = new THREE.Mesh(botGasketGeo, gasketMat);
-    botGasket.position.set(2.03, -0.76, 0.9);
-    shellGroup.add(botGasket);
+    // 2. Starboard Shell (Right Wall - Solid aerodynamic fiberglass canopy with official Siemens Gamesa livery)
+    const stbdShellGeo = new THREE.BoxGeometry(2.05, 3.8, 14.2);
+    this.stbdShellMesh = new THREE.Mesh(stbdShellGeo, this.nacelleShellMaterial);
+    this.stbdShellMesh.position.set(1.025, 0, 0);
+    this.stbdShellMesh.castShadow = true;
+    this.stbdShellMesh.receiveShadow = true;
+    shellGroup.add(this.stbdShellMesh);
 
     // Solid Roof Deck (Flush with rooftop coolers at y = 4.4m)
     const roofDeckGeo = new THREE.BoxGeometry(2.05, 0.12, 14.2);

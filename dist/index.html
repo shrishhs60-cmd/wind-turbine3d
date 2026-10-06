@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-I-wdSjeY.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CC7bwgSL.css">
+  <script type="module" crossorigin src="./assets/index-Bx3BHYAy.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BAe9bYFm.css">
 </head>
 <body>
   <div id="app">
@@ -99,6 +99,17 @@
           </svg>
         </button>
 
+        <!-- Rotor Spin Pause / Resume Toggle -->
+        <button class="header-action-btn" id="btn-toggle-rotor-spin" title="Pause or Resume Windmill Rotor Spinning">
+          <span id="spin-btn-icon">⏸</span>
+          <span id="spin-btn-text">Pause Rotor</span>
+        </button>
+
+        <!-- Clean Free View (Hide Side Panels) Toggle -->
+        <button class="header-action-btn active" id="btn-toggle-free-view" title="Toggle Clean Unobstructed Free View (Hide / Show Panels)">
+          <span>👁 Free View</span>
+        </button>
+
         <!-- X-Ray Cutaway View Toggle -->
         <button class="header-action-btn" id="btn-xray-toggle" title="Toggle Nacelle Cutaway (Inspect Internal Drivetrain)">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
@@ -162,14 +173,12 @@
       <!-- Camera View Quick Presets -->
       <div class="camera-presets-bar">
         <span class="bar-tag">VIEWS:</span>
-        <button class="cam-preset-btn active" data-preset="hero" title="Full Turbine View: Perfectly framed view of the windmill, rotating blades, nacelle, and tower">Full Turbine ⚡</button>
-        <button class="cam-preset-btn" data-preset="ridge" title="Mountain Ridge Vista: Sweeping view of the turbine line stretching down the mountain ridge">Ridge Vista 🌄</button>
-        <button class="cam-preset-btn drone-btn" data-preset="drone" id="btn-cam-drone" title="Cinematic Drone Flyover: Sweeping flight along the mountain ridge">Drone Flyover 🚁</button>
-        <button class="cam-preset-btn" data-preset="nacelle" title="Close-up inspection of internal planetary gears, main bearing, brake disc, and generator">Nacelle / Drivetrain</button>
-        <button class="cam-preset-btn" data-preset="hub">Rotor Hub & Pitch</button>
-        <button class="cam-preset-btn" data-preset="wingtip">Blade Tip View</button>
-        <button class="cam-preset-btn" data-preset="tower">Base & Foundation</button>
-        <button class="cam-preset-btn" data-preset="aerial">Bird's-Eye Far</button>
+        <button class="cam-preset-btn active" data-preset="hero" title="Full Turbine View: Perfectly framed view of the whole windmill">Full Turbine ⚡</button>
+        <button class="cam-preset-btn" data-preset="front" title="Direct Front Perspective">Front View 🧭</button>
+        <button class="cam-preset-btn" data-preset="side" title="Side Aerodynamic Profile">Side Profile 📐</button>
+        <button class="cam-preset-btn" data-preset="ground" title="Ground Elevation Perspective">Ground View 🦅</button>
+        <button class="cam-preset-btn" data-preset="ridge" title="Mountain Ridge Panoramic Vista">Ridge Vista 🌄</button>
+        <button class="cam-preset-btn drone-btn" data-preset="drone" id="btn-cam-drone" title="Cinematic Drone Flyover">Drone Flyover 🚁</button>
       </div>
 
       <!-- Component Click Inspector Card (Floating when a part is clicked) -->
@@ -574,7 +583,7 @@
             <div class="toggle-switch-list">
               <label class="toggle-row">
                 <span>3D Digital Twin Hotspots</span>
-                <input type="checkbox" id="chk-hotspots" checked />
+                <input type="checkbox" id="chk-hotspots" />
                 <span class="toggle-slider"></span>
               </label>
               <label class="toggle-row">

@@ -559,6 +559,32 @@ body {
   right: 14px;
 }
 
+/* Free View / Zen Mode: Hide panels for unobstructed full windmill view */
+body.free-view-active .left-panel {
+  transform: translateX(-360px);
+  pointer-events: none;
+}
+
+body.free-view-active .right-panel {
+  transform: translateX(360px);
+  pointer-events: none;
+}
+
+body.free-view-active .viewport-hud-widget.top-left {
+  left: 20px;
+  transition: left 0.3s ease;
+}
+
+body.free-view-active .camera-presets-bar {
+  right: 20px;
+  transition: right 0.3s ease;
+}
+
+body.free-view-active .bottom-dock-panel {
+  transform: translateY(120%);
+  transition: transform 0.3s ease;
+}
+
 .panel-header {
   padding: 12px 14px;
   display: flex;
