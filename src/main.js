@@ -110,11 +110,11 @@ class AeroTurbineApp {
     // 1. Scene
     this.scene = new THREE.Scene();
 
-    // 2. Camera: Positioned initially for a breathtaking "Hero" view
+    // 2. Camera: Positioned initially for a breathtaking full view of the windmill
     const aspect = this.viewportContainer.clientWidth / this.viewportContainer.clientHeight;
     this.camera = new THREE.PerspectiveCamera(45, aspect, 0.5, 2000);
-    // Initial direct framing matching reference photo:
-    this.camera.position.set(-24.0, 32.0, 68.0);
+    // Initial direct framing centered on the windmill:
+    this.camera.position.set(-82.0, 92.0, 118.0);
 
     // 3. Renderer with tone mapping and shadows
     this.renderer = new THREE.WebGLRenderer({
@@ -128,7 +128,7 @@ class AeroTurbineApp {
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.12;
+    this.renderer.toneMappingExposure = 0.82; // Balanced exposure to prevent blowout and show full turbine details
 
     // 4. OrbitControls
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -137,12 +137,12 @@ class AeroTurbineApp {
     this.controls.maxPolarAngle = Math.PI / 2 - 0.02; // Don't clip below ground
     this.controls.minDistance = 6.0;
     this.controls.maxDistance = 650.0;
-    this.controls.target.set(-26.0, 62.0, -180.0); // Facing sweeping ridge into sunrise
+    this.controls.target.set(0.0, 72.0, 0.0); // Perfectly centered on the windmill body & rotor hub
     this.controls.autoRotate = false;
     this.controls.autoRotateSpeed = 0.65;
     this.controls.update();
 
-    this.currentPreset = 'ridge';
+    this.currentPreset = 'hero';
 
     // 5. Cinematic Post-Processing Pipeline (Atmospheric Bloom & Photorealism)
     try {
@@ -152,9 +152,9 @@ class AeroTurbineApp {
 
       this.bloomPass = new UnrealBloomPass(
         new THREE.Vector2(this.viewportContainer.clientWidth, this.viewportContainer.clientHeight),
-        0.32, // Subtle atmospheric bloom strength
-        0.65, // Radius
-        0.82  // Threshold (only brilliant sunrise sun, glints, and beacons glow)
+        0.12, // Subtle atmospheric bloom strength (reduced from 0.32 so turbine edges stay crisp)
+        0.55, // Radius
+        0.93  // Threshold (only intense specular highlights and beacons glow, no blinding turbine wash)
       );
       this.composer.addPass(this.bloomPass);
 
@@ -199,11 +199,10 @@ class AeroTurbineApp {
 
     switch (preset) {
       case 'hero':
-        // Cinematic Hero Orbit viewpoint
-        targetPos = new THREE.Vector3(-105, 112, 145);
-        lookAt = new THREE.Vector3(0, hubY, 0);
-        this.controls.autoRotate = true;
-        this.controls.autoRotateSpeed = 0.65;
+        // Full Windmill viewpoint - perfectly frames the entire turbine from blades to foundation
+        targetPos = new THREE.Vector3(-82.0, 92.0, 118.0);
+        lookAt = new THREE.Vector3(0.0, 72.0, 0.0);
+        this.controls.autoRotate = false;
         break;
       case 'nacelle':
         // Close-up drivetrain inspection view directly beside the observation cutaway
@@ -223,11 +222,9 @@ class AeroTurbineApp {
         this.controls.autoRotate = false;
         break;
       case 'ridge':
-        // Viewpoint matching the reference photograph:
-        // Elevated ridge crest behind WTG-01 on the right,
-        // looking down the sweeping curve of wind turbines into the golden sunrise above the sea of clouds
-        targetPos = new THREE.Vector3(-24.0, 32.0, 68.0);
-        lookAt = new THREE.Vector3(-26.0, 62.0, -180.0);
+        // Viewpoint framing the windmill in foreground while showcasing the sweeping mountain ridge
+        targetPos = new THREE.Vector3(-36.0, 52.0, 90.0);
+        lookAt = new THREE.Vector3(-15.0, 75.0, -80.0);
         this.controls.autoRotate = false;
         break;
       case 'drone':
@@ -422,6 +419,19 @@ class AeroTurbineApp {
         this.setCameraPreset(btn.dataset.preset);
       });
     });
+
+    // 8b. Real-time Scene Brightness / Exposure Slider
+    const exposureSlider = document.getElementById('exposure-slider');
+    const exposureLabel = document.getElementById('exposure-val-label');
+    if (exposureSlider) {
+      exposureSlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        this.renderer.toneMappingExposure = val;
+        if (exposureLabel) {
+          exposureLabel.textContent = `${Math.round(val * 100)}%`;
+        }
+      });
+    }
 
     // 9b. SCADA Scope Switcher (Single Turbine vs Wind Farm Fleet)
     const btnScopeTurbine = document.getElementById('btn-scope-turbine');
@@ -974,7 +984,7 @@ class AeroTurbineApp {
     this.sunGlareElement.style.top = `${y}px`;
 
     const distCenter = Math.hypot(sunPos.x, sunPos.y);
-    const intensity = Math.max(0, 1.0 - distCenter / 1.35) * 0.65;
+    const intensity = Math.max(0, 1.0 - distCenter / 1.35) * 0.18;
     this.sunGlareElement.style.opacity = intensity.toFixed(2);
   }
 

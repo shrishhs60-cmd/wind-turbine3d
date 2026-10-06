@@ -1915,19 +1915,72 @@ body {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.35), rgba(0, 242, 254, 0.35)) !important;
 }
 
-/* Optical Sun Glare Effect */
+/* Optical Sun Glare Effect - Softened to prevent blinding washout */
 .sun-glare-effect {
   position: absolute;
-  width: 320px;
-  height: 320px;
+  width: 240px;
+  height: 240px;
   border-radius: 50%;
   pointer-events: none;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(255, 240, 200, 0.55) 0%, rgba(255, 200, 120, 0.25) 30%, rgba(255, 160, 80, 0.08) 60%, rgba(255, 140, 40, 0) 100%);
+  background: radial-gradient(circle, rgba(255, 245, 220, 0.28) 0%, rgba(255, 215, 140, 0.12) 35%, rgba(255, 180, 100, 0.04) 60%, transparent 100%);
   mix-blend-mode: screen;
   z-index: 5;
   opacity: 0;
   transition: opacity 0.3s ease;
+}
+
+/* Brightness / Exposure Slider in Header */
+.brightness-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 4px 10px;
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+
+.brightness-slider-container:hover {
+  border-color: rgba(0, 242, 254, 0.4);
+  color: #e2e8f0;
+}
+
+.brightness-slider-container input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 72px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.brightness-slider-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #00f2fe;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+  transition: transform 0.1s ease;
+}
+
+.brightness-slider-container input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+.brightness-slider-container span {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: #00f2fe;
+  min-width: 28px;
 }
 
 /* 3D Digital Twin Hotspots Overlay */

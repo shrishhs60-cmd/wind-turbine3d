@@ -197,72 +197,70 @@ export class TurbineBuilder {
     const ctx = canvas.getContext('2d');
 
     if (mode === 'day') {
-      // 1. Natural Highland Mountain Dawn / Sunrise Gradient
+      // 1. Natural High-Contrast Alpine Azure Sky Gradient (Clear visibility & contrast)
       const skyGrad = ctx.createLinearGradient(0, 0, 0, 1024);
-      skyGrad.addColorStop(0.0, '#0a2e5c'); // Deep Alpine Indigo Zenith
-      skyGrad.addColorStop(0.24, '#1b4f8c');
-      skyGrad.addColorStop(0.48, '#3b78b8');
-      skyGrad.addColorStop(0.68, '#71a3d4');
-      skyGrad.addColorStop(0.82, '#b8a8cc'); // Soft Mauve Dawn Scattering
-      skyGrad.addColorStop(0.92, '#f1a868'); // Radiant Apricot Sunrise Glow
-      skyGrad.addColorStop(0.97, '#fed596'); // Golden Horizon Rim
-      skyGrad.addColorStop(1.0, '#fde6c4');  // Warm illuminated valley mist
+      skyGrad.addColorStop(0.0, '#0e3868'); // Deep Alpine Navy Zenith
+      skyGrad.addColorStop(0.25, '#1d5696');
+      skyGrad.addColorStop(0.50, '#3b77b7');
+      skyGrad.addColorStop(0.72, '#6ea2d5');
+      skyGrad.addColorStop(0.88, '#9bc2e5');
+      skyGrad.addColorStop(0.96, '#cce0f2');
+      skyGrad.addColorStop(1.0, '#e4eef7');  // Crisp clean horizon rim
       ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, 2048, 1024);
 
-      // 2. High Dynamic Range Solar Corona & Sun Disc (Low Dawn Sun on Left Horizon)
+      // 2. High Dynamic Range Solar Corona & Sun Disc (Softer natural sun)
       const sunX = 640;
       const sunY = 540;
 
-      // Wide Atmospheric Golden Halo
-      const wideHalo = ctx.createRadialGradient(sunX, sunY, 20, sunX, sunY, 520);
-      wideHalo.addColorStop(0.0, 'rgba(255, 235, 185, 0.7)');
-      wideHalo.addColorStop(0.35, 'rgba(255, 205, 140, 0.32)');
-      wideHalo.addColorStop(0.7, 'rgba(245, 175, 110, 0.12)');
-      wideHalo.addColorStop(1.0, 'rgba(240, 180, 130, 0.0)');
+      // Soft Atmospheric Golden Halo
+      const wideHalo = ctx.createRadialGradient(sunX, sunY, 15, sunX, sunY, 260);
+      wideHalo.addColorStop(0.0, 'rgba(255, 245, 220, 0.28)');
+      wideHalo.addColorStop(0.4, 'rgba(240, 220, 180, 0.12)');
+      wideHalo.addColorStop(1.0, 'rgba(220, 230, 245, 0.0)');
       ctx.fillStyle = wideHalo;
       ctx.fillRect(0, 0, 2048, 1024);
 
-      // Inner Brilliant Golden Corona
-      const corona = ctx.createRadialGradient(sunX, sunY, 5, sunX, sunY, 110);
+      // Inner Sun Corona
+      const corona = ctx.createRadialGradient(sunX, sunY, 5, sunX, sunY, 65);
       corona.addColorStop(0.0, '#ffffff');
-      corona.addColorStop(0.25, '#fff9e6');
-      corona.addColorStop(0.65, 'rgba(255, 215, 130, 0.85)');
-      corona.addColorStop(1.0, 'rgba(255, 185, 90, 0.0)');
+      corona.addColorStop(0.35, '#fff9e8');
+      corona.addColorStop(0.75, 'rgba(255, 230, 170, 0.45)');
+      corona.addColorStop(1.0, 'rgba(255, 215, 140, 0.0)');
       ctx.fillStyle = corona;
       ctx.beginPath();
-      ctx.arc(sunX, sunY, 110, 0, Math.PI * 2);
+      ctx.arc(sunX, sunY, 65, 0, Math.PI * 2);
       ctx.fill();
 
-      // Incandescent Sun Disc
+      // Sharp Natural Sun Disc
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(sunX, sunY, 20, 0, Math.PI * 2);
+      ctx.arc(sunX, sunY, 14, 0, Math.PI * 2);
       ctx.fill();
 
-      // 3. Delicate Procedural High-Altitude Dawn Cirrus Cloud Streaks
-      for (let c = 0; c < 35; c++) {
+      // 3. Delicate Procedural High-Altitude Cirrus Cloud Streaks
+      for (let c = 0; c < 30; c++) {
         const cx = Math.random() * 2048;
         const cy = 100 + Math.random() * 320;
         const cLen = 160 + Math.random() * 360;
-        const cThick = 4 + Math.random() * 16;
-        const cAlpha = 0.07 + Math.random() * 0.12;
+        const cThick = 4 + Math.random() * 14;
+        const cAlpha = 0.05 + Math.random() * 0.08;
 
         const cirrusGrad = ctx.createLinearGradient(cx, cy, cx + cLen, cy);
-        cirrusGrad.addColorStop(0, 'rgba(255, 235, 215, 0)');
-        cirrusGrad.addColorStop(0.5, `rgba(255, 235, 215, ${cAlpha})`);
-        cirrusGrad.addColorStop(1, 'rgba(255, 235, 215, 0)');
+        cirrusGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        cirrusGrad.addColorStop(0.5, `rgba(255, 255, 255, ${cAlpha})`);
+        cirrusGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
         ctx.fillStyle = cirrusGrad;
         ctx.beginPath();
-        ctx.ellipse(cx + cLen / 2, cy, cLen / 2, cThick, (Math.random() - 0.5) * 0.06, 0, Math.PI * 2);
+        ctx.ellipse(cx + cLen / 2, cy, cLen / 2, cThick, (Math.random() - 0.5) * 0.05, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // 4. Ground-Level Aerial Mountain Sunrise Haze Layer (Blends with Fog 0xd6a87c)
+      // 4. Clean Valley Horizon Blend (Blends with clear sky fog 0x8eaec9)
       const hazeGrad = ctx.createLinearGradient(0, 840, 0, 1024);
-      hazeGrad.addColorStop(0.0, 'rgba(254, 230, 196, 0.0)');
-      hazeGrad.addColorStop(1.0, 'rgba(214, 168, 124, 0.45)');
+      hazeGrad.addColorStop(0.0, 'rgba(228, 238, 247, 0.0)');
+      hazeGrad.addColorStop(1.0, 'rgba(142, 174, 201, 0.32)');
       ctx.fillStyle = hazeGrad;
       ctx.fillRect(0, 840, 2048, 184);
     } else if (mode === 'sunset') {
@@ -927,16 +925,16 @@ export class TurbineBuilder {
   }
 
   setupLighting() {
-    this.ambientLight = new THREE.AmbientLight(0xffdfc4, 0.68);
+    this.ambientLight = new THREE.AmbientLight(0xd8e8f8, 0.42);
     this.scene.add(this.ambientLight);
 
-    // Sky azure, ground warm terracotta heather bounce
-    this.hemiLight = new THREE.HemisphereLight(0x9cb8db, 0x8a4513, 0.78);
+    // Sky soft azure, ground natural alpine grass bounce
+    this.hemiLight = new THREE.HemisphereLight(0x89b0d6, 0x3a4835, 0.48);
     this.scene.add(this.hemiLight);
 
-    // Golden dawn directional sunlight skimming the mountain ridge from the left
-    this.dirLight = new THREE.DirectionalLight(0xffdf96, 3.4);
-    this.dirLight.position.set(-190, 70, 110);
+    // Natural directional sunlight angled to clearly highlight turbine contours & blades
+    this.dirLight = new THREE.DirectionalLight(0xfff7ee, 1.5);
+    this.dirLight.position.set(-160, 95, 120);
     this.dirLight.castShadow = true;
     this.dirLight.shadow.mapSize.width = 2048;
     this.dirLight.shadow.mapSize.height = 2048;
@@ -951,13 +949,13 @@ export class TurbineBuilder {
     this.scene.add(this.dirLight);
 
     const sunGeo = new THREE.SphereGeometry(14, 24, 24);
-    const sunMat = new THREE.MeshBasicMaterial({ color: 0xfffaea });
+    const sunMat = new THREE.MeshBasicMaterial({ color: 0xfff5e6 });
     this.sunSphere = new THREE.Mesh(sunGeo, sunMat);
     this.sunSphere.position.copy(this.dirLight.position).multiplyScalar(2.2);
     this.scene.add(this.sunSphere);
 
-    // Warm golden mountain sunrise haze
-    this.scene.fog = new THREE.FogExp2(0xd6a87c, 0.00085);
+    // Clear atmospheric mountain haze with high visual clarity
+    this.scene.fog = new THREE.FogExp2(0x8eaec9, 0.00032);
   }
 
   buildMountainRidgeTerrain() {
@@ -3595,24 +3593,28 @@ export class TurbineBuilder {
   setTimeOfDay(mode) {
     this.currentEnvMode = mode;
     if (mode === 'day') {
-      this.scene.fog.color.setHex(0xd6a87c); // Warm golden sunrise mountain mist
-      this.ambientLight.color.setHex(0xffdfc4);
-      this.ambientLight.intensity = 0.68;
-      this.hemiLight.color.setHex(0x9cb8db);
-      this.hemiLight.groundColor.setHex(0x8a4513); // Terracotta / heather ground bounce
-      this.dirLight.color.setHex(0xffdf96);
-      this.dirLight.intensity = 3.4;
-      this.dirLight.position.set(-190, 70, 110);
+      this.scene.fog.color.setHex(0x8eaec9); // Clear mountain sky haze
+      this.scene.fog.density = 0.00032;
+      this.ambientLight.color.setHex(0xd8e8f8);
+      this.ambientLight.intensity = 0.42;
+      this.hemiLight.color.setHex(0x89b0d6);
+      this.hemiLight.groundColor.setHex(0x3a4835);
+      this.hemiLight.intensity = 0.48;
+      this.dirLight.color.setHex(0xfff7ee);
+      this.dirLight.intensity = 1.5;
+      this.dirLight.position.set(-160, 95, 120);
       this.sunSphere.visible = true;
-      this.sunSphere.material.color.setHex(0xfffaea);
+      this.sunSphere.material.color.setHex(0xfff5e6);
     } else if (mode === 'sunset') {
-      this.scene.fog.color.setHex(0x943a29);
+      this.scene.fog.color.setHex(0x753026);
+      this.scene.fog.density = 0.00038;
       this.ambientLight.color.setHex(0xffaa77);
-      this.ambientLight.intensity = 0.52;
+      this.ambientLight.intensity = 0.38;
       this.hemiLight.color.setHex(0xff8844);
       this.hemiLight.groundColor.setHex(0x3a180d);
+      this.hemiLight.intensity = 0.42;
       this.dirLight.color.setHex(0xff7733);
-      this.dirLight.intensity = 2.4;
+      this.dirLight.intensity = 1.4;
       this.dirLight.position.set(-190, 48, 55);
       this.sunSphere.visible = true;
       this.sunSphere.material.color.setHex(0xff5522);
