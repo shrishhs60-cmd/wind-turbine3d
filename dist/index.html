@@ -8,108 +8,111 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-CQLYaQRc.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-B2JOF3Cd.css">
+  <script type="module" crossorigin src="./assets/index-DEr6Brsf.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-B9E57Zy6.css">
 </head>
 <body>
   <div id="app">
     <!-- Top Navigation Bar -->
     <header class="app-header">
-      <div class="header-left">
-        <div class="logo-mark">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3" />
-            <path d="M12 9V2l4 7h-4z" fill="currentColor" opacity="0.8"/>
-            <path d="M9.4 13.5L3.3 17l6.6 3.4-0.5-6.9z" fill="currentColor" opacity="0.8"/>
-            <path d="M14.6 13.5l6.1 3.5-6.6 3.4 0.5-6.9z" fill="currentColor" opacity="0.8"/>
-          </svg>
+      <div class="header-top-row">
+        <div class="header-left">
+          <div class="logo-mark">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 9V2l4 7h-4z" fill="currentColor" opacity="0.8"/>
+              <path d="M9.4 13.5L3.3 17l6.6 3.4-0.5-6.9z" fill="currentColor" opacity="0.8"/>
+              <path d="M14.6 13.5l6.1 3.5-6.6 3.4 0.5-6.9z" fill="currentColor" opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="header-title-group">
+            <h1><span style="color:#00a3ad">WINDCARE</span> MONITORING</h1>
+            <span class="sub-badge">SG 5.0-145 · UTILITY WIND PARK · 5.0 MW</span>
+          </div>
         </div>
-        <div class="header-title-group">
-          <h1><span style="color:#00a3ad">WINDCARE</span> MONITORING</h1>
-          <span class="sub-badge">SG 5.0-145 · UTILITY WIND PARK · 5.0 MW</span>
+
+        <div class="header-center">
+          <div class="status-indicator-pill" id="system-status-pill">
+            <span class="pulse-dot"></span>
+            <span id="system-status-text">ONLINE · OPTITIP ACTIVE</span>
+          </div>
+          <div class="wind-quick-badge">
+            <span class="quick-label">WIND</span>
+            <span class="quick-val" id="top-wind-val">11.5</span>
+            <span class="quick-unit">m/s</span>
+          </div>
+          <div class="power-quick-badge">
+            <span class="quick-label">OUTPUT</span>
+            <span class="quick-val" id="top-power-val">5,000</span>
+            <span class="quick-unit">kW</span>
+          </div>
+          <div class="site-quick-badge" title="Highland Mountain Ridge Atmospheric Conditions (850m ASL)">
+            <span class="quick-label">SITE</span>
+            <span class="quick-val" id="top-site-val">8.5°C</span>
+            <span class="quick-unit">· 922 hPa</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Environment Time-of-Day Switcher -->
+          <div class="env-toggle-group" title="Time of Day Lighting">
+            <button class="env-btn active" data-tod="day" id="btn-tod-day" aria-label="Sunrise / Day Mode" title="Highland Golden Sunrise">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+            </button>
+            <button class="env-btn" data-tod="sunset" id="btn-tod-sunset" aria-label="Sunset Mode" title="Mountain Twilight">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/></svg>
+            </button>
+            <button class="env-btn" data-tod="night" id="btn-tod-night" aria-label="Night Mode" title="Highland Starry Night">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+          </div>
+
+          <!-- Scene Brightness / Exposure Slider -->
+          <div class="brightness-slider-container" title="Adjust Scene Brightness / Exposure Level">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
+            </svg>
+            <input type="range" id="exposure-slider" min="0.4" max="1.3" step="0.05" value="0.82" aria-label="Scene Brightness">
+            <span id="exposure-val-label">82%</span>
+          </div>
+
+          <!-- Fullscreen Mode Toggle -->
+          <button class="icon-toggle-btn" id="btn-fullscreen-toggle" title="Toggle Fullscreen Immersion Mode">
+            <svg id="icon-fs-enter" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+            <svg id="icon-fs-exit" class="hidden" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M10 4v6m0 0H4m6 0L3 3m10 7h6m0 0V4m0 6l7-7"/>
+            </svg>
+          </button>
+
+          <!-- Sound Synthesizer Toggle -->
+          <button class="icon-toggle-btn" id="btn-audio-toggle" title="Toggle Synthesized Aero/Gen Sound">
+            <svg id="icon-sound-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <line x1="23" y1="9" x2="17" y2="15"/>
+              <line x1="17" y1="9" x2="23" y2="15"/>
+            </svg>
+            <svg id="icon-sound-on" class="hidden" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 5"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </button>
         </div>
       </div>
 
-      <div class="header-center">
-        <div class="status-indicator-pill" id="system-status-pill">
-          <span class="pulse-dot"></span>
-          <span id="system-status-text">ONLINE · OPTITIP ACTIVE</span>
-        </div>
-        <div class="wind-quick-badge">
-          <span class="quick-label">WIND</span>
-          <span class="quick-val" id="top-wind-val">11.5</span>
-          <span class="quick-unit">m/s</span>
-        </div>
-        <div class="power-quick-badge">
-          <span class="quick-label">OUTPUT</span>
-          <span class="quick-val" id="top-power-val">5,000</span>
-          <span class="quick-unit">kW</span>
-        </div>
-        <div class="site-quick-badge" title="Highland Mountain Ridge Atmospheric Conditions (850m ASL)">
-          <span class="quick-label">SITE</span>
-          <span class="quick-val" id="top-site-val">8.5°C</span>
-          <span class="quick-unit">· 922 hPa</span>
-        </div>
-      </div>
-
-      <div class="header-right">
-        <!-- Environment Time-of-Day Switcher -->
-        <div class="env-toggle-group" title="Time of Day Lighting">
-          <button class="env-btn active" data-tod="day" id="btn-tod-day" aria-label="Sunrise / Day Mode" title="Highland Golden Sunrise">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
-          </button>
-          <button class="env-btn" data-tod="sunset" id="btn-tod-sunset" aria-label="Sunset Mode" title="Mountain Twilight">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/></svg>
-          </button>
-          <button class="env-btn" data-tod="night" id="btn-tod-night" aria-label="Night Mode" title="Highland Starry Night">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          </button>
-        </div>
-
-        <!-- Scene Brightness / Exposure Slider -->
-        <div class="brightness-slider-container" title="Adjust Scene Brightness / Exposure Level">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
-          </svg>
-          <input type="range" id="exposure-slider" min="0.4" max="1.3" step="0.05" value="0.82" aria-label="Scene Brightness">
-          <span id="exposure-val-label">82%</span>
-        </div>
-
-        <!-- Fullscreen Mode Toggle -->
-        <button class="icon-toggle-btn" id="btn-fullscreen-toggle" title="Toggle Fullscreen Immersion Mode">
-          <svg id="icon-fs-enter" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-          </svg>
-          <svg id="icon-fs-exit" class="hidden" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M10 4v6m0 0H4m6 0L3 3m10 7h6m0 0V4m0 6l7-7"/>
-          </svg>
-        </button>
-
-        <!-- Sound Synthesizer Toggle -->
-        <button class="icon-toggle-btn" id="btn-audio-toggle" title="Toggle Synthesized Aero/Gen Sound">
-          <svg id="icon-sound-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-            <line x1="23" y1="9" x2="17" y2="15"/>
-            <line x1="17" y1="9" x2="23" y2="15"/>
-          </svg>
-          <svg id="icon-sound-on" class="hidden" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 5"/>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-          </svg>
-        </button>
-
+      <!-- Dedicated Action Controls Toolbar (Single Line, Perfectly Aligned) -->
+      <div class="header-action-group" id="header-action-group">
         <!-- Rotor Spin Pause / Resume Toggle -->
         <button class="header-action-btn" id="btn-toggle-rotor-spin" title="Pause or Resume Windmill Rotor Spinning">
           <span id="spin-btn-icon">⏸</span>
-          <span id="spin-btn-text" class="btn-lbl-full">Pause Rotor</span>
-          <span class="btn-lbl-short">Pause</span>
+          <span id="spin-btn-text">Pause Rotor</span>
         </button>
 
         <!-- Clean Free View (Hide Side Panels) Toggle -->
         <button class="header-action-btn active" id="btn-toggle-free-view" title="Toggle Clean Unobstructed Free View (Hide / Show Panels)">
-          <span class="btn-lbl-full">👁 Free View</span>
-          <span class="btn-lbl-short">👁 Free</span>
+          <span>👁 Free View</span>
         </button>
 
         <!-- X-Ray Cutaway View Toggle -->
@@ -118,8 +121,7 @@
             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
-          <span class="btn-lbl-full">X-Ray Cutaway</span>
-          <span class="btn-lbl-short">X-Ray</span>
+          <span>X-Ray Cutaway</span>
         </button>
 
         <!-- Export Standard 3D Model (.GLB) Button -->
@@ -129,8 +131,7 @@
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          <span class="btn-lbl-full">Export 3D (.GLB)</span>
-          <span class="btn-lbl-short">Export 3D</span>
+          <span>Export 3D (.GLB)</span>
         </button>
 
         <!-- Specs & Blueprint Modal Toggle -->
@@ -140,8 +141,7 @@
             <line x1="3" y1="9" x2="21" y2="9"/>
             <line x1="9" y1="21" x2="9" y2="9"/>
           </svg>
-          <span class="btn-lbl-full">Engineering Blueprint</span>
-          <span class="btn-lbl-short">Blueprint</span>
+          <span>Engineering Blueprint</span>
         </button>
       </div>
     </header>
