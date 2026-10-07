@@ -51,10 +51,10 @@ class AeroTurbineApp {
     this.scadaScope = 'turbine';
     this.farmListRendered = false;
 
-    // Cinematic Post-Processing Pipeline
+    // Cinematic Post-Processing Pipeline (Direct high-performance WebGL default for silky-smooth 60+ FPS)
     this.composer = null;
     this.bloomPass = null;
-    this.bloomEnabled = true;
+    this.bloomEnabled = false;
 
     // 3D Digital Twin Hotspots
     this.hotspots = [];
@@ -127,23 +127,28 @@ class AeroTurbineApp {
       powerPreference: 'high-performance',
     });
     this.renderer.setSize(this.viewportContainer.clientWidth, this.viewportContainer.clientHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.82; // Balanced exposure to prevent blowout and show full turbine details
 
-    // 4. OrbitControls
+    // 4. OrbitControls: Full Unrestricted Freedom (Rotate, Pan, Zoom Up Close & Far Away)
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.05;
-    this.controls.maxPolarAngle = Math.PI / 2 - 0.02; // Don't clip below ground
-    this.controls.minDistance = 6.0;
-    this.controls.maxDistance = 650.0;
-    this.controls.target.set(0.0, 72.0, 0.0); // Perfectly centered on the windmill body & rotor hub
+    this.controls.dampingFactor = 0.08;
+    this.controls.screenSpacePanning = true; // Full vertical & horizontal panning freedom
+    this.controls.maxPolarAngle = Math.PI / 2 + 0.12; // Free viewing angle from ground level upwards
+    this.controls.minDistance = 2.0; // Zoom in close to inspect blades, hub, drivetrain, and foundation
+    this.controls.maxDistance = 850.0; // Zoom out to view entire wind turbine & highland vista
+    this.controls.target.set(0.0, 72.0, 0.0); // Centered on the turbine body & rotor hub
     this.controls.autoRotate = false;
     this.controls.autoRotateSpeed = 0.65;
+    this.controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_PAN
+    };
     this.controls.update();
 
     this.currentPreset = 'hero';
@@ -172,6 +177,12 @@ class AeroTurbineApp {
 
     this.controls.addEventListener('start', () => {
       this.isUserInteracting = true;
+      // Immediately give user 100% control by cancelling any running camera transitions:
+      this.camTargetPos = null;
+      this.camTargetLookAt = null;
+      if (this.currentPreset === 'drone') {
+        this.currentPreset = 'manual';
+      }
     });
     this.controls.addEventListener('end', () => {
       this.isUserInteracting = false;
@@ -759,6 +770,26 @@ class AeroTurbineApp {
 
     // 11. Raycasting Click-to-Inspect in 3D Scene
     this.canvas.addEventListener('click', (e) => this.onSceneClick(e));
+
+    // Double-click to Focus: Smoothly centers the camera orbit directly onto any double-clicked turbine component
+    this.canvas.addEventListener('dblclick', (event) => {
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      this.raycaster.setFromCamera(this.mouse, this.camera);
+      const intersects = this.raycaster.intersectObjects(this.scene.children, true);
+      if (intersects.length > 0) {
+        const hit = intersects.find((h) => h.object !== this.builder.skyDome && h.point.y > 0.3) || intersects[0];
+        if (hit) {
+          this.camTargetLookAt = hit.point.clone();
+          const dir = this.camera.position.clone().sub(hit.point).normalize();
+          const targetDist = Math.max(10.0, Math.min(85.0, this.camera.position.distanceTo(hit.point) * 0.7));
+          this.camTargetPos = hit.point.clone().add(dir.multiplyScalar(targetDist));
+          this.controls.autoRotate = false;
+        }
+      }
+    });
 
     const btnCloseInspect = document.getElementById('btn-close-inspect');
     btnCloseInspect.addEventListener('click', () => {
