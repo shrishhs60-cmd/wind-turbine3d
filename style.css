@@ -102,21 +102,40 @@ body {
 }
 
 .logo-mark {
-  color: var(--accent-cyan);
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));
-  animation: logo-spin-slow 35s linear infinite;
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
 }
 
-@keyframes logo-spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
+.brand-logo-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(0, 242, 254, 0.55);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.35);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: logo-glow-pulse 4s ease-in-out infinite;
+  display: block;
+}
 
-  to {
-    transform: rotate(360deg);
+.logo-mark:hover .brand-logo-img {
+  transform: scale(1.1) rotate(6deg);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.75), 0 0 8px rgba(0, 255, 136, 0.45);
+}
+
+@keyframes logo-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.35);
+    border-color: rgba(0, 242, 254, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(0, 242, 254, 0.65), 0 0 8px rgba(0, 255, 136, 0.35);
+    border-color: rgba(0, 255, 136, 0.7);
   }
 }
 
@@ -2612,6 +2631,11 @@ body.free-view-active .bottom-dock-panel {
    COMPACT HALF SCREEN (< 720px)
    --------------------------------------------------------------------- */
 @media (max-width: 720px) {
+  .brand-logo-img {
+    width: 30px;
+    height: 30px;
+  }
+
   .header-title-group h1 {
     font-size: 0.92rem;
   }
