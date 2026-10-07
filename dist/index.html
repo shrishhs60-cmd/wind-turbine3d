@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-DmcEiyrV.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BAe9bYFm.css">
+  <script type="module" crossorigin src="./assets/index-DOe4goq8.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DXWI928e.css">
 </head>
 <body>
   <div id="app">
@@ -209,7 +209,10 @@
             <div class="indicator-icon-pulse"></div>
             <h2>SCADA TELEMETRY</h2>
           </div>
-          <span class="pill-id" id="scada-active-id">WTG-01</span>
+          <div class="panel-header-actions">
+            <span class="pill-id" id="scada-active-id">WTG-01</span>
+            <button class="btn-panel-close" id="btn-close-left-panel" title="Close Telemetry" aria-label="Close Telemetry">&times;</button>
+          </div>
         </div>
 
         <!-- Scope Switcher: Single Turbine vs Mountain Ridge Wind Farm Fleet -->
@@ -433,7 +436,10 @@
             </svg>
             <h2>TURBINE CONTROLS</h2>
           </div>
-          <span class="pill-mode" id="badge-op-mode">AUTO MPPT</span>
+          <div class="panel-header-actions">
+            <span class="pill-mode" id="badge-op-mode">AUTO MPPT</span>
+            <button class="btn-panel-close" id="btn-close-right-panel" title="Close Controls" aria-label="Close Controls">&times;</button>
+          </div>
         </div>
 
         <div class="control-sections">
@@ -681,6 +687,18 @@
           </div>
         </div>
       </footer>
+
+      <!-- Floating Mobile Quick Access Navigation Pills -->
+      <div class="mobile-scada-pills" id="mobile-scada-pills">
+        <button class="mobile-scada-pill" id="btn-mobile-telemetry" title="Toggle Telemetry Panel">
+          <span class="pill-dot green"></span>
+          <span>Telemetry</span>
+        </button>
+        <button class="mobile-scada-pill" id="btn-mobile-controls" title="Toggle Controls Panel">
+          <span class="pill-dot cyan"></span>
+          <span>Controls</span>
+        </button>
+      </div>
     </main>
 
     <!-- Engineering Blueprint & Technical Specs Modal -->

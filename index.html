@@ -208,7 +208,10 @@
             <div class="indicator-icon-pulse"></div>
             <h2>SCADA TELEMETRY</h2>
           </div>
-          <span class="pill-id" id="scada-active-id">WTG-01</span>
+          <div class="panel-header-actions">
+            <span class="pill-id" id="scada-active-id">WTG-01</span>
+            <button class="btn-panel-close" id="btn-close-left-panel" title="Close Telemetry" aria-label="Close Telemetry">&times;</button>
+          </div>
         </div>
 
         <!-- Scope Switcher: Single Turbine vs Mountain Ridge Wind Farm Fleet -->
@@ -432,7 +435,10 @@
             </svg>
             <h2>TURBINE CONTROLS</h2>
           </div>
-          <span class="pill-mode" id="badge-op-mode">AUTO MPPT</span>
+          <div class="panel-header-actions">
+            <span class="pill-mode" id="badge-op-mode">AUTO MPPT</span>
+            <button class="btn-panel-close" id="btn-close-right-panel" title="Close Controls" aria-label="Close Controls">&times;</button>
+          </div>
         </div>
 
         <div class="control-sections">
@@ -680,6 +686,18 @@
           </div>
         </div>
       </footer>
+
+      <!-- Floating Mobile Quick Access Navigation Pills -->
+      <div class="mobile-scada-pills" id="mobile-scada-pills">
+        <button class="mobile-scada-pill" id="btn-mobile-telemetry" title="Toggle Telemetry Panel">
+          <span class="pill-dot green"></span>
+          <span>Telemetry</span>
+        </button>
+        <button class="mobile-scada-pill" id="btn-mobile-controls" title="Toggle Controls Panel">
+          <span class="pill-dot cyan"></span>
+          <span>Controls</span>
+        </button>
+      </div>
     </main>
 
     <!-- Engineering Blueprint & Technical Specs Modal -->

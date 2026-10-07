@@ -454,14 +454,77 @@ class AeroTurbineApp {
 
     // 8d. Clean Free View (Hide / Show Side Panels) Toggle
     const btnToggleFreeView = document.getElementById('btn-toggle-free-view');
+    const btnMobTel = document.getElementById('btn-mobile-telemetry');
+    const btnMobCtrl = document.getElementById('btn-mobile-controls');
+
+    const updatePanelButtonStates = () => {
+      const isFree = document.body.classList.contains('free-view-active');
+      if (btnToggleFreeView) {
+        btnToggleFreeView.classList.toggle('active', isFree);
+      }
+      if (btnMobTel) {
+        btnMobTel.classList.toggle('active', document.body.classList.contains('mobile-left-open'));
+      }
+      if (btnMobCtrl) {
+        btnMobCtrl.classList.toggle('active', document.body.classList.contains('mobile-right-open'));
+      }
+    };
+
     if (btnToggleFreeView) {
       btnToggleFreeView.addEventListener('click', () => {
         const isFree = document.body.classList.toggle('free-view-active');
-        if (isFree) {
-          btnToggleFreeView.classList.add('active');
+        document.body.classList.remove('mobile-left-open', 'mobile-right-open');
+        updatePanelButtonStates();
+      });
+    }
+
+    // Panel Close Buttons
+    const btnCloseLeft = document.getElementById('btn-close-left-panel');
+    if (btnCloseLeft) {
+      btnCloseLeft.addEventListener('click', () => {
+        document.body.classList.add('free-view-active');
+        document.body.classList.remove('mobile-left-open');
+        updatePanelButtonStates();
+      });
+    }
+
+    const btnCloseRight = document.getElementById('btn-close-right-panel');
+    if (btnCloseRight) {
+      btnCloseRight.addEventListener('click', () => {
+        document.body.classList.add('free-view-active');
+        document.body.classList.remove('mobile-right-open');
+        updatePanelButtonStates();
+      });
+    }
+
+    // Mobile Quick Access Pills
+    if (btnMobTel) {
+      btnMobTel.addEventListener('click', () => {
+        const wasOpen = document.body.classList.contains('mobile-left-open');
+        document.body.classList.remove('mobile-right-open');
+        if (wasOpen) {
+          document.body.classList.remove('mobile-left-open');
+          document.body.classList.add('free-view-active');
         } else {
-          btnToggleFreeView.classList.remove('active');
+          document.body.classList.add('mobile-left-open');
+          document.body.classList.remove('free-view-active');
         }
+        updatePanelButtonStates();
+      });
+    }
+
+    if (btnMobCtrl) {
+      btnMobCtrl.addEventListener('click', () => {
+        const wasOpen = document.body.classList.contains('mobile-right-open');
+        document.body.classList.remove('mobile-left-open');
+        if (wasOpen) {
+          document.body.classList.remove('mobile-right-open');
+          document.body.classList.add('free-view-active');
+        } else {
+          document.body.classList.add('mobile-right-open');
+          document.body.classList.remove('free-view-active');
+        }
+        updatePanelButtonStates();
       });
     }
 

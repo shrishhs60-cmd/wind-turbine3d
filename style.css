@@ -561,12 +561,14 @@ body {
 
 /* Free View / Zen Mode: Hide panels for unobstructed full windmill view */
 body.free-view-active .left-panel {
-  transform: translateX(-360px);
+  transform: translateX(-380px);
+  opacity: 0;
   pointer-events: none;
 }
 
 body.free-view-active .right-panel {
-  transform: translateX(360px);
+  transform: translateX(380px);
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -581,8 +583,38 @@ body.free-view-active .camera-presets-bar {
 }
 
 body.free-view-active .bottom-dock-panel {
-  transform: translateY(120%);
-  transition: transform 0.3s ease;
+  transform: translateY(140%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.panel-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-panel-close {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-panel-close:hover {
+  background: rgba(255, 51, 102, 0.2);
+  border-color: rgba(255, 51, 102, 0.4);
+  color: var(--accent-rose);
 }
 
 .panel-header {
@@ -2148,40 +2180,365 @@ body.free-view-active .bottom-dock-panel {
   display: none !important;
 }
 
+/* Floating Mobile Quick Access Navigation Pills */
+.mobile-scada-pills {
+  display: none;
+}
+
 @media (max-width: 1280px) {
   .scada-panel {
-    width: 280px;
+    width: 290px;
   }
 
   .viewport-hud-widget.top-left {
-    left: 304px;
+    left: 314px;
   }
 
   .camera-presets-bar {
-    right: 304px;
+    right: 314px;
   }
 
   .bottom-dock-panel {
-    left: 304px;
-    right: 304px;
+    left: 314px;
+    right: 314px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .app-header {
+    height: 52px;
+    min-height: 52px;
+    padding: 0 12px;
+    gap: 10px;
+  }
+
+  .sub-badge {
+    display: none;
+  }
+
+  .site-quick-badge {
+    display: none;
+  }
+
+  .viewport-container {
+    height: calc(100vh - 52px);
+  }
+
+  .scada-panel {
+    width: 300px;
+    top: 10px;
+    bottom: 60px;
+    z-index: 30;
+  }
+
+  .left-panel {
+    left: 10px;
+  }
+
+  .right-panel {
+    right: 10px;
+  }
+
+  .viewport-hud-widget.top-left {
+    left: 10px;
+    top: 10px;
+  }
+
+  .camera-presets-bar {
+    right: 10px;
+    top: 10px;
+    max-width: calc(100vw - 120px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .bottom-dock-panel {
+    left: 10px;
+    right: 10px;
+    bottom: 8px;
+    max-width: 580px;
+    margin: 0 auto;
+    z-index: 35;
   }
 }
 
 @media (max-width: 992px) {
-  .scada-panel {
-    position: static;
-    width: 100%;
-    height: auto;
-    max-height: 280px;
+  /* Prevent header flex wrap and clipping */
+  .app-header {
+    height: 50px;
+    min-height: 50px;
+    padding: 0 10px;
+    gap: 8px;
+    overflow: hidden;
   }
 
+  .header-left h1 {
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+
+  .header-left .logo-mark svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .header-center {
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .status-indicator-pill {
+    padding: 3px 8px;
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+
+  .wind-quick-badge,
+  .power-quick-badge {
+    padding: 3px 8px;
+    font-size: 0.68rem;
+    white-space: nowrap;
+  }
+
+  .header-right {
+    gap: 5px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    max-width: 55%;
+    flex-shrink: 1;
+  }
+
+  .header-right::-webkit-scrollbar {
+    display: none;
+  }
+
+  .header-action-btn {
+    padding: 5px 8px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+
+  .brightness-slider-container {
+    width: 72px;
+  }
+
+  .brightness-slider-container input[type="range"] {
+    width: 40px;
+  }
+
+  #exposure-val-label {
+    display: none;
+  }
+
+  /* Viewport & 3D canvas ALWAYS stay full screen */
   .viewport-container {
-    display: flex;
-    flex-direction: column;
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 50px);
+    overflow: hidden;
+    display: block;
   }
 
+  #webgl-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 1;
+  }
+
+  /* Floating drawer overlay panels */
+  .scada-panel {
+    position: absolute;
+    top: 8px;
+    bottom: 58px;
+    width: min(350px, calc(100vw - 20px));
+    z-index: 40;
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.85);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  }
+
+  .left-panel {
+    left: 10px;
+    transform: translateX(calc(-100% - 30px));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .right-panel {
+    right: 10px;
+    transform: translateX(calc(100% + 30px));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Mobile panel open states */
+  body.mobile-left-open .left-panel {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.mobile-right-open .right-panel {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* When free view is active, ensure panels slide away */
+  body.free-view-active .left-panel {
+    transform: translateX(calc(-100% - 30px)) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body.free-view-active .right-panel {
+    transform: translateX(calc(100% + 30px)) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* Floating mobile navigation pills at bottom center */
+  .mobile-scada-pills {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 25;
+    background: rgba(8, 12, 20, 0.82);
+    backdrop-filter: blur(16px);
+    padding: 4px 6px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--bg-panel-border);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+  }
+
+  .mobile-scada-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid transparent;
+    color: var(--text-main);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .mobile-scada-pill:hover,
+  .mobile-scada-pill.active {
+    background: var(--accent-cyan-dim);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+  }
+
+  .mobile-scada-pill .pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .mobile-scada-pill .pill-dot.green {
+    background: var(--accent-emerald);
+    box-shadow: 0 0 6px var(--accent-emerald);
+  }
+
+  .mobile-scada-pill .pill-dot.cyan {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 6px var(--accent-cyan);
+  }
+
+  /* Camera view presets bar on small screens */
+  .camera-presets-bar {
+    top: 8px;
+    right: 8px;
+    max-width: calc(100vw - 16px);
+    overflow-x: auto;
+    scrollbar-width: none;
+    white-space: nowrap;
+    padding: 4px 8px;
+    z-index: 20;
+  }
+
+  .cam-preset-btn {
+    padding: 4px 8px;
+    font-size: 0.68rem;
+    flex-shrink: 0;
+  }
+
+  /* Bottom dock on small screens */
   .bottom-dock-panel {
-    position: static;
-    margin: 10px;
+    left: 8px;
+    right: 8px;
+    bottom: 54px;
+    max-width: 520px;
+    margin: 0 auto;
+    z-index: 22;
+  }
+
+  body.free-view-active .bottom-dock-panel {
+    transform: translateY(140%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .wind-quick-badge {
+    display: none;
+  }
+
+  .header-title-group h1 {
+    font-size: 0.88rem;
+  }
+
+  .header-action-btn span {
+    font-size: 0.65rem;
+  }
+
+  .env-type-toggle-group {
+    display: none;
+  }
+
+  /* Move compass to bottom-left so it never interferes with camera presets */
+  .viewport-hud-widget.top-left {
+    top: auto;
+    bottom: 56px;
+    left: 8px;
+    z-index: 18;
+  }
+
+  .compass-info {
+    display: none;
+  }
+
+  .compass-ring {
+    padding: 4px;
+  }
+
+  .camera-presets-bar {
+    top: 6px;
+    right: 6px;
+    left: 6px;
+    max-width: calc(100vw - 12px);
+    justify-content: flex-start;
+  }
+
+  .scada-panel {
+    width: calc(100vw - 16px);
+    left: 8px;
+    right: 8px;
+    top: 6px;
+    bottom: 56px;
   }
 }
