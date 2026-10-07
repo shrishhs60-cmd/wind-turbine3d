@@ -101,12 +101,14 @@
         <!-- Rotor Spin Pause / Resume Toggle -->
         <button class="header-action-btn" id="btn-toggle-rotor-spin" title="Pause or Resume Windmill Rotor Spinning">
           <span id="spin-btn-icon">⏸</span>
-          <span id="spin-btn-text">Pause Rotor</span>
+          <span id="spin-btn-text" class="btn-lbl-full">Pause Rotor</span>
+          <span class="btn-lbl-short">Pause</span>
         </button>
 
         <!-- Clean Free View (Hide Side Panels) Toggle -->
         <button class="header-action-btn active" id="btn-toggle-free-view" title="Toggle Clean Unobstructed Free View (Hide / Show Panels)">
-          <span>👁 Free View</span>
+          <span class="btn-lbl-full">👁 Free View</span>
+          <span class="btn-lbl-short">👁 Free</span>
         </button>
 
         <!-- X-Ray Cutaway View Toggle -->
@@ -115,7 +117,8 @@
             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
-          <span>X-Ray Cutaway</span>
+          <span class="btn-lbl-full">X-Ray Cutaway</span>
+          <span class="btn-lbl-short">X-Ray</span>
         </button>
 
         <!-- Export Standard 3D Model (.GLB) Button -->
@@ -125,17 +128,19 @@
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          <span>Export 3D (.GLB)</span>
+          <span class="btn-lbl-full">Export 3D (.GLB)</span>
+          <span class="btn-lbl-short">Export 3D</span>
         </button>
 
         <!-- Specs & Blueprint Modal Toggle -->
-        <button class="header-action-btn primary" id="btn-specs-open">
+        <button class="header-action-btn primary" id="btn-specs-open" title="Open Technical Specifications & Blueprint Modal">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
             <line x1="3" y1="9" x2="21" y2="9"/>
             <line x1="9" y1="21" x2="9" y2="9"/>
           </svg>
-          <span>Engineering Blueprint</span>
+          <span class="btn-lbl-full">Engineering Blueprint</span>
+          <span class="btn-lbl-short">Blueprint</span>
         </button>
       </div>
     </header>
@@ -172,13 +177,34 @@
       <!-- Camera View Quick Presets -->
       <div class="camera-presets-bar">
         <span class="bar-tag">VIEWS:</span>
-        <button class="cam-preset-btn active" data-preset="hero" title="Full Turbine View: Perfectly framed view of the whole windmill">Full Turbine ⚡</button>
-        <button class="cam-preset-btn" data-preset="front" title="Direct Front Perspective">Front View 🧭</button>
-        <button class="cam-preset-btn" data-preset="side" title="Side Aerodynamic Profile">Side Profile 📐</button>
-        <button class="cam-preset-btn" data-preset="ground" title="Ground Elevation Perspective">Ground View 🦅</button>
-        <button class="cam-preset-btn" data-preset="substation" title="Substation & Basement: Inspect 33 kV step-up transformer, switchgear powerhouse, and foundation cable vault">Substation & Base ⚡</button>
-        <button class="cam-preset-btn" data-preset="ridge" title="Wind Farm Panoramic Vista: View down the flat utility turbine array">Wind Farm Vista 🌄</button>
-        <button class="cam-preset-btn drone-btn" data-preset="drone" id="btn-cam-drone" title="Cinematic Drone Flyover">Drone Flyover 🚁</button>
+        <button class="cam-preset-btn active" data-preset="hero" title="Full Turbine View: Perfectly framed view of the whole windmill">
+          <span class="view-label-full">Full Turbine ⚡</span>
+          <span class="view-label-short">Full ⚡</span>
+        </button>
+        <button class="cam-preset-btn" data-preset="front" title="Direct Front Perspective">
+          <span class="view-label-full">Front View 🧭</span>
+          <span class="view-label-short">Front 🧭</span>
+        </button>
+        <button class="cam-preset-btn" data-preset="side" title="Side Aerodynamic Profile">
+          <span class="view-label-full">Side Profile 📐</span>
+          <span class="view-label-short">Side 📐</span>
+        </button>
+        <button class="cam-preset-btn" data-preset="ground" title="Ground Elevation Perspective">
+          <span class="view-label-full">Ground View 🦅</span>
+          <span class="view-label-short">Ground 🦅</span>
+        </button>
+        <button class="cam-preset-btn" data-preset="substation" title="Substation & Basement: Inspect 33 kV step-up transformer, switchgear powerhouse, and foundation cable vault">
+          <span class="view-label-full">Substation & Base ⚡</span>
+          <span class="view-label-short">Base ⚡</span>
+        </button>
+        <button class="cam-preset-btn" data-preset="ridge" title="Wind Farm Panoramic Vista: View down the flat utility turbine array">
+          <span class="view-label-full">Wind Farm Vista 🌄</span>
+          <span class="view-label-short">Farm 🌄</span>
+        </button>
+        <button class="cam-preset-btn drone-btn" data-preset="drone" id="btn-cam-drone" title="Cinematic Drone Flyover">
+          <span class="view-label-full">Drone Flyover 🚁</span>
+          <span class="view-label-short">Drone 🚁</span>
+        </button>
       </div>
 
       <!-- Component Click Inspector Card (Floating when a part is clicked) -->
@@ -687,15 +713,19 @@
         </div>
       </footer>
 
-      <!-- Floating Mobile Quick Access Navigation Pills -->
+      <!-- Floating Mobile / Half-Screen Quick Access Navigation Pills -->
       <div class="mobile-scada-pills" id="mobile-scada-pills">
-        <button class="mobile-scada-pill" id="btn-mobile-telemetry" title="Toggle Telemetry Panel">
+        <button class="mobile-scada-pill" id="btn-mobile-telemetry" title="Toggle SCADA Telemetry Drawer">
           <span class="pill-dot green"></span>
           <span>Telemetry</span>
         </button>
-        <button class="mobile-scada-pill" id="btn-mobile-controls" title="Toggle Controls Panel">
+        <button class="mobile-scada-pill" id="btn-mobile-controls" title="Toggle Turbine Controls Drawer">
           <span class="pill-dot cyan"></span>
           <span>Controls</span>
+        </button>
+        <button class="mobile-scada-pill" id="btn-mobile-power-curve" title="Toggle Aerodynamic Power Curve Chart">
+          <span class="pill-dot amber"></span>
+          <span>Power Curve</span>
         </button>
       </div>
     </main>

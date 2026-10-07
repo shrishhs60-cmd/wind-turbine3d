@@ -528,6 +528,36 @@ class AeroTurbineApp {
       });
     }
 
+    const btnMobChart = document.getElementById('btn-mobile-power-curve');
+    const dockPanel = document.getElementById('bottom-dock-panel');
+    if (btnMobChart && dockPanel) {
+      btnMobChart.addEventListener('click', () => {
+        document.body.classList.remove('mobile-left-open', 'mobile-right-open');
+        const isCollapsed = dockPanel.classList.toggle('collapsed');
+        btnMobChart.classList.toggle('active', !isCollapsed);
+        if (!isCollapsed) {
+          document.body.classList.remove('free-view-active');
+        }
+        updatePanelButtonStates();
+        setTimeout(() => {
+          if (this.chartManager && this.chartManager.chart) {
+            this.chartManager.chart.resize();
+          }
+        }, 350);
+      });
+    }
+
+    // Dismiss open mobile drawers when clicking 3D canvas background
+    const canvasEl = document.getElementById('webgl-canvas');
+    if (canvasEl) {
+      canvasEl.addEventListener('click', () => {
+        if (document.body.classList.contains('mobile-left-open') || document.body.classList.contains('mobile-right-open')) {
+          document.body.classList.remove('mobile-left-open', 'mobile-right-open');
+          updatePanelButtonStates();
+        }
+      });
+    }
+
     // 9b. SCADA Scope Switcher (Single Turbine vs Wind Farm Fleet)
     const btnScopeTurbine = document.getElementById('btn-scope-turbine');
     const btnScopeFarm = document.getElementById('btn-scope-farm');
@@ -643,16 +673,18 @@ class AeroTurbineApp {
     });
 
     // 10. Bottom Power Curve Dock Collapse
-    const dockPanel = document.getElementById('bottom-dock-panel');
     const dockBar = document.getElementById('dock-toggle-bar');
-    dockBar.addEventListener('click', () => {
-      dockPanel.classList.toggle('collapsed');
-      setTimeout(() => {
-        if (this.chartManager && this.chartManager.chart) {
-          this.chartManager.chart.resize();
-        }
-      }, 350);
-    });
+    if (dockBar && dockPanel) {
+      dockBar.addEventListener('click', () => {
+        const isCollapsed = dockPanel.classList.toggle('collapsed');
+        if (btnMobChart) btnMobChart.classList.toggle('active', !isCollapsed);
+        setTimeout(() => {
+          if (this.chartManager && this.chartManager.chart) {
+            this.chartManager.chart.resize();
+          }
+        }, 350);
+      });
+    }
 
     // 10b. Export Standard 3D Model (.GLB)
     const exportBtn = document.getElementById('btn-export-glb');
