@@ -2228,6 +2228,168 @@ body.free-view-active .bottom-dock-panel {
 }
 
 /* =====================================================================
+   QUICK TURBINE SPECIFICATIONS HUD OVERLAY
+   ===================================================================== */
+.turbine-specs-hud {
+  position: absolute;
+  top: 72px;
+  right: 18px;
+  width: 310px;
+  max-width: calc(100vw - 36px);
+  background: rgba(11, 16, 28, 0.88);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 242, 254, 0.45);
+  border-radius: var(--radius-md);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(0, 242, 254, 0.2);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slide-in-top 0.3s ease-out;
+}
+
+.turbine-specs-hud.hidden {
+  display: none !important;
+}
+
+.turbine-specs-hud.collapsed .specs-hud-body {
+  display: none;
+}
+
+.specs-hud-header {
+  padding: 10px 14px;
+  background: rgba(16, 24, 42, 0.95);
+  border-bottom: 1px solid rgba(0, 242, 254, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.specs-hud-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.specs-hud-badge {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--accent-emerald);
+  letter-spacing: 0.6px;
+}
+
+.specs-hud-title-wrap h3 {
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+.btn-specs-hud-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-main);
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.btn-specs-hud-toggle:hover {
+  background: var(--accent-cyan);
+  color: #07090e;
+  border-color: var(--accent-cyan);
+}
+
+.specs-hud-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spec-metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.spec-metric-item {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: border-color 0.2s;
+}
+
+.spec-metric-item:hover {
+  border-color: rgba(0, 242, 254, 0.35);
+  background: rgba(0, 242, 254, 0.04);
+}
+
+.spec-metric-item .s-label {
+  font-size: 0.55rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.spec-metric-item .s-val {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spec-metric-item .s-val.highlight {
+  color: var(--accent-cyan);
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.4);
+}
+
+.btn-open-full-datasheet {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(0, 242, 254, 0.18), rgba(0, 255, 136, 0.15));
+  border: 1px solid var(--accent-cyan);
+  color: #ffffff;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+}
+
+.btn-open-full-datasheet:hover {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-emerald));
+  color: #07090e;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+  transform: translateY(-1px);
+}
+
+/* =====================================================================
    UTILITY & RESPONSIVE DESIGN SYSTEM
    ===================================================================== */
 .hidden {
@@ -2624,6 +2786,15 @@ body.free-view-active .bottom-dock-panel {
     transform: translateX(-50%);
     width: min(340px, calc(100vw - 24px));
     z-index: 50;
+  }
+
+  /* 11. Turbine Specifications HUD Card */
+  .turbine-specs-hud {
+    top: 54px;
+    right: 50%;
+    transform: translateX(50%);
+    width: min(320px, calc(100vw - 20px));
+    z-index: 48;
   }
 }
 

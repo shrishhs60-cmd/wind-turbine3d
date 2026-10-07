@@ -131,14 +131,26 @@
           <span>Export 3D (.GLB)</span>
         </button>
 
-        <!-- Specs & Blueprint Modal Toggle -->
-        <button class="header-action-btn primary" id="btn-specs-open" title="Open Technical Specifications & Blueprint Modal">
+        <!-- Quick Specifications HUD Overlay Toggle -->
+        <button class="header-action-btn active" id="btn-toggle-spec-hud" title="Toggle Quick Turbine Specifications Card">
+          <span>📊 Spec Sheet</span>
+        </button>
+
+        <!-- 3D Component Callout Pins Toggle -->
+        <button class="header-action-btn active" id="btn-toggle-hotspots" title="Toggle 3D Specification Callout Pins on Turbine">
+          <span>📌 Spec Pins</span>
+        </button>
+
+        <!-- Full Technical Specifications & Blueprint Modal Toggle -->
+        <button class="header-action-btn primary" id="btn-specs-open" title="Open Full Technical Specifications & Engineering Datasheet">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <line x1="3" y1="9" x2="21" y2="9"/>
-            <line x1="9" y1="21" x2="9" y2="9"/>
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
           </svg>
-          <span>Engineering Blueprint</span>
+          <span>📋 Turbine Specs</span>
         </button>
       </div>
     </header>
@@ -195,14 +207,74 @@
           <span class="view-label-full">Substation & Base ⚡</span>
           <span class="view-label-short">Base ⚡</span>
         </button>
-        <button class="cam-preset-btn" data-preset="ridge" title="Wind Farm Panoramic Vista: View down the flat utility turbine array">
-          <span class="view-label-full">Wind Farm Vista 🌄</span>
-          <span class="view-label-short">Farm 🌄</span>
+        <button class="cam-preset-btn" data-preset="specs" title="Specifications Framing: Clear perspective to read all turbine components and callouts">
+          <span class="view-label-full">Specs View 📋</span>
+          <span class="view-label-short">Specs 📋</span>
         </button>
-        <button class="cam-preset-btn drone-btn" data-preset="drone" id="btn-cam-drone" title="Cinematic Drone Flyover">
-          <span class="view-label-full">Drone Flyover 🚁</span>
-          <span class="view-label-short">Drone 🚁</span>
+        <button class="cam-preset-btn drone-btn" data-preset="drone" id="btn-cam-drone" title="Cinematic 360° Turbine Inspection Orbit">
+          <span class="view-label-full">Orbit 360° 🚁</span>
+          <span class="view-label-short">Orbit 🚁</span>
         </button>
+      </div>
+
+      <!-- Quick Turbine Specifications HUD Card (Always Accessible) -->
+      <div class="turbine-specs-hud" id="turbine-specs-hud">
+        <div class="specs-hud-header">
+          <div class="specs-hud-title-wrap">
+            <span class="specs-hud-badge">WTG-01 SINGLE UNIT</span>
+            <h3>SG 5.0-145 SPECIFICATIONS</h3>
+          </div>
+          <div class="specs-hud-actions">
+            <button class="btn-specs-hud-toggle" id="btn-specs-hud-toggle" title="Collapse / Expand Spec Sheet">−</button>
+          </div>
+        </div>
+        <div class="specs-hud-body" id="specs-hud-body">
+          <div class="spec-metric-grid">
+            <div class="spec-metric-item">
+              <span class="s-label">RATED OUTPUT</span>
+              <span class="s-val highlight">5,000 kW (5.0 MW)</span>
+            </div>
+            <div class="spec-metric-item">
+              <span class="s-label">ROTOR DIAMETER</span>
+              <span class="s-val">145.0 m</span>
+            </div>
+            <div class="spec-metric-item">
+              <span class="s-label">BLADE LENGTH</span>
+              <span class="s-val">71.0 m (3x IntegralBlade®)</span>
+            </div>
+            <div class="spec-metric-item">
+              <span class="s-label">HUB HEIGHT</span>
+              <span class="s-val">107.5 m (Tip: 180.0 m)</span>
+            </div>
+            <div class="spec-metric-item">
+              <span class="s-label">ROTOR SPEED</span>
+              <span class="s-val">5.2 – 12.2 RPM (OptiSpeed®)</span>
+            </div>
+            <div class="spec-metric-item">
+              <span class="s-label">GEARBOX RATIO</span>
+              <span class="s-val">1 : 104.2 (3-Stage)</span>
+            </div>
+            <div class="spec-metric-item">
+              <span class="s-label">GENERATOR TYPE</span>
+              <span class="s-val">OptiSpeed® DFIG (690V)</span>
+            </div>
+            <div class="spec-metric-item">
+              <span class="s-label">SUBSTATION</span>
+              <span class="s-val">33 kV Step-Up MV</span>
+            </div>
+            <div class="spec-metric-item">
+              <span class="s-label">WIND ENVELOPE</span>
+              <span class="s-val">3.0 – 25.0 m/s (Rated: 11.5)</span>
+            </div>
+            <div class="spec-metric-item">
+              <span class="s-label">FOUNDATION</span>
+              <span class="s-val">680 m³ Gravity Base</span>
+            </div>
+          </div>
+          <button class="btn-open-full-datasheet" id="btn-hud-open-blueprint">
+            <span>View Detailed Technical Datasheet (6 Tabs) →</span>
+          </button>
+        </div>
       </div>
 
       <!-- Component Click Inspector Card (Floating when a part is clicked) -->
@@ -233,15 +305,9 @@
             <h2>SCADA TELEMETRY</h2>
           </div>
           <div class="panel-header-actions">
-            <span class="pill-id" id="scada-active-id">WTG-01</span>
+            <span class="pill-id" id="scada-active-id">WTG-01 SINGLE UNIT</span>
             <button class="btn-panel-close" id="btn-close-left-panel" title="Close Telemetry" aria-label="Close Telemetry">&times;</button>
           </div>
-        </div>
-
-        <!-- Scope Switcher: Single Turbine vs Mountain Ridge Wind Farm Fleet -->
-        <div class="scada-scope-bar">
-          <button class="scope-btn active" id="btn-scope-turbine" data-scope="turbine">WTG-01 Focus</button>
-          <button class="scope-btn" id="btn-scope-farm" data-scope="farm">Ridge Farm (8x WTGs)</button>
         </div>
 
         <div class="telemetry-sections">
@@ -637,8 +703,8 @@
                 <span class="toggle-slider"></span>
               </label>
               <label class="toggle-row">
-                <span>Auxiliary Wind Farm Turbines</span>
-                <input type="checkbox" id="chk-farm-turbines" checked />
+                <span>3D Specification Callout Pins</span>
+                <input type="checkbox" id="chk-hotspots" checked />
                 <span class="toggle-slider"></span>
               </label>
             </div>

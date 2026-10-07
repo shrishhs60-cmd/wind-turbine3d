@@ -126,7 +126,7 @@ export class TurbineBuilder {
     this.buildMetMastAnemometerTower();
     this.buildWindTurbine();
     this.buildBasementSubstationPowerhouse();
-    this.buildRidgeTurbineString();
+    // Single Turbine Mode: 8 auxiliary turbines removed per user specification
     this.buildLivingBeingsEcosystem(); // Soaring gulls/raptors, technicians & service truck
     this.buildStreamlineParticles();
     this.buildTipVortexSystem();
@@ -806,38 +806,7 @@ export class TurbineBuilder {
     ctx.lineWidth = 0.8;
     ctx.strokeRect(parkPx - 3.5, parkPy - 4.5, 7, 9);
 
-    // 4. Auxiliary Turbines String Hardstands (z = -100, -200, -310, -430, -560, -700, -850, -1020)
-    const ridgeZ = [-100, -200, -310, -430, -560, -700, -850, -1020];
-    const padR = (16 / 2400) * 2048;
-    const innerR = (10 / 2400) * 2048;
-
-    ridgeZ.forEach((zPos) => {
-      const cx = worldToPx(0);
-      const cy = worldToPy(zPos);
-
-      // Connector spur road from main road (x = 8.5) to turbine pad (x = 0)
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(cx, cy - 2.5, worldToPx(8.5) - cx, 5);
-
-      // Hardstand gravel pad
-      ctx.fillStyle = '#475569';
-      ctx.beginPath();
-      ctx.arc(cx, cy, padR, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Concrete plinth ring
-      ctx.fillStyle = '#94a3b8';
-      ctx.beginPath();
-      ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
-      ctx.fill();
-
-      // White boundary safety ring
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.arc(cx, cy, padR, 0, Math.PI * 2);
-      ctx.stroke();
-    });
+    // Single Turbine Ground: Auxiliary ridge pads removed for clean, focused site presentation
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.ClampToEdgeWrapping;
@@ -4264,11 +4233,13 @@ export class TurbineBuilder {
       });
     }
 
-    // 12. Auxiliary Background Wind Turbines
-    this.farmRotorGroups.forEach((frGroup, idx) => {
-      const speedFactor = 0.92 + (idx % 3) * 0.08;
-      frGroup.rotation.z += physics.angularVelocity * speedFactor * dt;
-    });
+    // 12. Auxiliary Background Wind Turbines (Safely guarded for single-turbine mode)
+    if (this.farmRotorGroups && this.farmRotorGroups.length > 0) {
+      this.farmRotorGroups.forEach((frGroup, idx) => {
+        const speedFactor = 0.92 + (idx % 3) * 0.08;
+        frGroup.rotation.z += physics.angularVelocity * speedFactor * dt;
+      });
+    }
 
     // 13. Synchronized Xenon Double-Flash Aviation Strobe
     if (this.beaconLights.length > 0) {

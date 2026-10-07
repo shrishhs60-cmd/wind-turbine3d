@@ -226,10 +226,11 @@ class AeroTurbineApp {
         lookAt = new THREE.Vector3(0.0, 85.0, 0.0);
         this.controls.autoRotate = false;
         break;
+      case 'specs':
       case 'ridge':
-        // Panoramic viewpoint framing the windmill and the flat utility array string
-        targetPos = new THREE.Vector3(-36.0, 52.0, 90.0);
-        lookAt = new THREE.Vector3(0.0, 50.0, -80.0);
+        // Optimal angle and zoom framing the full single turbine with clear component callouts
+        targetPos = new THREE.Vector3(-85.0, 75.0, 115.0);
+        lookAt = new THREE.Vector3(0.0, 68.0, 0.0);
         this.controls.autoRotate = false;
         break;
       case 'substation':
@@ -239,7 +240,7 @@ class AeroTurbineApp {
         this.controls.autoRotate = false;
         break;
       case 'drone':
-        // Cinematic Mountain Ridge Drone Flyover Mode
+        // Cinematic Single Turbine 360° Inspection Orbit
         this.controls.autoRotate = false;
         this.droneProgress = 0;
         targetPos = null;
@@ -634,15 +635,49 @@ class AeroTurbineApp {
       });
     }
 
-    // 9. Simulation Visualizer Checkboxes
-    // Realism Suite Visualizer Toggles
+    // 9. Simulation Visualizer Checkboxes & Spec Controls
     const chkHotspots = document.getElementById('chk-hotspots');
+    const btnToggleHotspots = document.getElementById('btn-toggle-hotspots');
+    const updateHotspotsState = (enabled) => {
+      this.hotspotsEnabled = enabled;
+      if (this.hotspotsContainer) {
+        this.hotspotsContainer.style.display = enabled ? 'block' : 'none';
+      }
+      if (chkHotspots) chkHotspots.checked = enabled;
+      if (btnToggleHotspots) btnToggleHotspots.classList.toggle('active', enabled);
+    };
+
     if (chkHotspots) {
-      chkHotspots.addEventListener('change', (e) => {
-        this.hotspotsEnabled = e.target.checked;
-        if (this.hotspotsContainer) {
-          this.hotspotsContainer.style.display = e.target.checked ? 'block' : 'none';
-        }
+      chkHotspots.addEventListener('change', (e) => updateHotspotsState(e.target.checked));
+    }
+    if (btnToggleHotspots) {
+      btnToggleHotspots.addEventListener('click', () => updateHotspotsState(!this.hotspotsEnabled));
+    }
+
+    // Quick Specifications HUD Card Toggles
+    const specHud = document.getElementById('turbine-specs-hud');
+    const btnToggleSpecHud = document.getElementById('btn-toggle-spec-hud');
+    const btnSpecsHudCollapse = document.getElementById('btn-specs-hud-toggle');
+    const btnHudOpenBlueprint = document.getElementById('btn-hud-open-blueprint');
+    const specsModal = document.getElementById('specs-modal');
+
+    if (btnToggleSpecHud && specHud) {
+      btnToggleSpecHud.addEventListener('click', () => {
+        const isHidden = specHud.classList.toggle('hidden');
+        btnToggleSpecHud.classList.toggle('active', !isHidden);
+      });
+    }
+
+    if (btnSpecsHudCollapse && specHud) {
+      btnSpecsHudCollapse.addEventListener('click', () => {
+        const isCollapsed = specHud.classList.toggle('collapsed');
+        btnSpecsHudCollapse.textContent = isCollapsed ? '+' : '−';
+      });
+    }
+
+    if (btnHudOpenBlueprint && specsModal) {
+      btnHudOpenBlueprint.addEventListener('click', () => {
+        specsModal.classList.remove('hidden');
       });
     }
 
@@ -666,11 +701,15 @@ class AeroTurbineApp {
     });
 
     const chkFarm = document.getElementById('chk-farm-turbines');
-    chkFarm.addEventListener('change', (e) => {
-      this.builder.farmRotorGroups.forEach((frg) => {
-        frg.parent.visible = e.target.checked;
+    if (chkFarm) {
+      chkFarm.addEventListener('change', (e) => {
+        if (this.builder.farmRotorGroups) {
+          this.builder.farmRotorGroups.forEach((frg) => {
+            if (frg.parent) frg.parent.visible = e.target.checked;
+          });
+        }
       });
-    });
+    }
 
     // 10. Bottom Power Curve Dock Collapse
     const dockBar = document.getElementById('dock-toggle-bar');
@@ -1005,28 +1044,155 @@ class AeroTurbineApp {
   /**
    * 3D Digital Twin Hotspot Callouts Overlay
    */
+  /**
+   * 3D Digital Twin Hotspot Callouts Overlay (Single Turbine Component Specifications)
+   */
   initHotspots() {
     this.hotspotsContainer = document.getElementById('hotspot-overlay-container');
     if (!this.hotspotsContainer) return;
 
-    this.hotspotsEnabled = false;
-    this.hotspotsContainer.style.display = 'none';
+    this.hotspotsEnabled = true;
+    this.hotspotsContainer.style.display = 'block';
 
-    const ridgeX_WTG2 = this.builder ? this.builder.getRidgeX(-100) : -13;
-    const ridgeY_WTG2 = this.builder ? this.builder.getTerrainHeight(ridgeX_WTG2, -100) : -8;
     const hubH = this.builder ? this.builder.HUB_HEIGHT : 107.5;
-    const metX = this.builder ? this.builder.getRidgeX(55) + 14.0 : 14.0;
-    const metY = this.builder ? this.builder.getTerrainHeight(metX, 55) : 0.0;
 
     this.hotspots = [
-      { id: 'hub', name: 'Rotor Hub (Ø 145m)', pos: new THREE.Vector3(0, hubH, 4.2), preset: 'hub' },
-      { id: 'gearbox', name: 'Planetary Gearbox (1:104.2)', pos: new THREE.Vector3(0, hubH + 2.3, -0.6), preset: 'nacelle' },
-      { id: 'generator', name: 'DFIG Generator (5.0 MW)', pos: new THREE.Vector3(0, hubH + 2.3, -3.8), preset: 'nacelle' },
-      { id: 'brake', name: 'High-Speed Disc Brake', pos: new THREE.Vector3(0, hubH + 2.3, -2.7), preset: 'nacelle' },
-      { id: 'transformer', name: '33 kV Substation Transformer', pos: new THREE.Vector3(8.8, 2.5, 5.2), preset: 'substation' },
-      { id: 'powerhouse', name: 'Powerhouse & Substation', pos: new THREE.Vector3(8.8, 2.8, -2.4), preset: 'substation' },
-      { id: 'metmast', name: '60m Met Mast & LiDAR', pos: new THREE.Vector3(metX, metY + 25.0, 55.0), preset: 'ridge' },
-      { id: 'wtg02', name: 'WTG-02 (Ridge Array)', pos: new THREE.Vector3(ridgeX_WTG2, ridgeY_WTG2 + hubH, -100.0), preset: 'farm' }
+      {
+        id: 'rotor',
+        name: '3x IntegralBlade® (Ø 145m)',
+        pos: new THREE.Vector3(0, hubH + 34.0, 4.2),
+        preset: 'front',
+        inspectData: {
+          title: 'WINDCARE MONITORING 71.0m IntegralBlade®',
+          tag: 'ROTOR AERODYNAMICS',
+          desc: '71-meter single-piece hybrid carbon/glass cast blades without glue seams, featuring DinoTails® low-noise trailing-edge serrations and OptiTip® individual pitch control.',
+          specs: [
+            { k: 'Rotor Diameter', v: '145.0 m (Swept: 16,513 m²)' },
+            { k: 'Blade Length', v: '71.0 m (17.2 Tons each)' },
+            { k: 'Tip Velocity', v: '287 km/h (79.7 m/s / Mach 0.23)' },
+            { k: 'Operating RPM', v: '5.2 – 12.2 RPM (Variable)' }
+          ]
+        }
+      },
+      {
+        id: 'hub',
+        name: 'Cast Rotor Hub & Pitch System',
+        pos: new THREE.Vector3(0, hubH, 4.5),
+        preset: 'hub',
+        inspectData: {
+          title: 'Cast Spherical Rotor Hub & Pitch Drives',
+          tag: 'ROTOR HUB ASSEMBLY',
+          desc: 'Heavy ductile iron spherical hub housing individual AC servomotor pitch actuators, emergency fail-safe ultra-capacitor backup modules, and blade pitch bearings.',
+          specs: [
+            { k: 'Pitch System', v: 'OptiTip® Individual Pitch' },
+            { k: 'Pitch Rate', v: 'Up to 8.0°/s (Fast Feather)' },
+            { k: 'Pre-Cone Angle', v: '2.5° Upwind Cone' },
+            { k: 'Rotor Tilt Angle', v: '5.0° Upward Tilt' }
+          ]
+        }
+      },
+      {
+        id: 'gearbox',
+        name: 'Planetary Gearbox (1 : 104.2)',
+        pos: new THREE.Vector3(0, hubH + 2.2, -0.6),
+        preset: 'nacelle',
+        inspectData: {
+          title: '3-Stage Planetary-Helical Transmission',
+          tag: 'DRIVETRAIN GEARBOX',
+          desc: 'Transforms low-speed high-torque rotor rotation (11.5 RPM) into high-speed generator input (1,060 RPM). Combines two planetary stages with one parallel helical gear set.',
+          specs: [
+            { k: 'Total Gear Ratio', v: '1 : 104.2' },
+            { k: 'Nominal Torque', v: '4,550 kN·m' },
+            { k: 'Lubrication', v: 'Pressure Synthetic ISO VG 320' },
+            { k: 'Efficiency', v: '97.5% Mechanical' }
+          ]
+        }
+      },
+      {
+        id: 'generator',
+        name: 'OptiSpeed® DFIG (5.0 MW / 690V)',
+        pos: new THREE.Vector3(0, hubH + 2.2, -3.8),
+        preset: 'nacelle',
+        inspectData: {
+          title: '5,000 kW Doubly-Fed Induction Generator (DFIG)',
+          tag: 'ELECTRICAL GENERATOR',
+          desc: 'Liquid-cooled 6-pole pair variable-speed induction generator delivering 5.0 MW rated power at 690 V AC to the frequency converter and step-up transformer.',
+          specs: [
+            { k: 'Rated Capacity', v: '5,000 kW (5.0 MW)' },
+            { k: 'Nominal Voltage', v: '690 V AC, 3-Phase' },
+            { k: 'Synchronous Speed', v: '1,000 / 1,200 RPM' },
+            { k: 'Power Factor', v: '0.95 Inductive to Capacitive' }
+          ]
+        }
+      },
+      {
+        id: 'tower',
+        name: 'Tubular Steel Tower (107.5m)',
+        pos: new THREE.Vector3(0, 52.0, 0.0),
+        preset: 'hero',
+        inspectData: {
+          title: '4-Section Conical Tubular Rolled Steel Tower',
+          tag: 'TOWER STRUCTURE',
+          desc: 'Heavy structural rolled steel conical tower standing 107.5m to hub centerline. Includes internal technician service lift, safety ladder, and high-voltage busbar cables.',
+          specs: [
+            { k: 'Hub Height', v: '107.5 m (Tip Height: 180.0 m)' },
+            { k: 'Base Diameter', v: 'Ø 5.10 m (Flanged Base)' },
+            { k: 'Top Flange Ø', v: 'Ø 3.44 m (Nacelle Flange)' },
+            { k: 'Total Tower Mass', v: '~245 Metric Tons' }
+          ]
+        }
+      },
+      {
+        id: 'transformer',
+        name: '33 kV Step-Up Substation',
+        pos: new THREE.Vector3(8.8, 3.0, 5.2),
+        preset: 'substation',
+        inspectData: {
+          title: '5,000 kVA 33 kV Medium-Voltage Step-Up Transformer',
+          tag: 'SUBSTATION TRANSFORMER',
+          desc: 'Pad-mounted oil-immersed step-up transformer converting 690 V generator output to 33 kV for direct utility grid collection export.',
+          specs: [
+            { k: 'Rated Power', v: '5,000 kVA (5.0 MVA)' },
+            { k: 'Voltage Ratio', v: '0.69 kV / 33.0 kV' },
+            { k: 'Cooling Class', v: 'ONAN Corrugated Steel Fins' },
+            { k: 'Grid Connection', v: '33 kV Under-Ground Collector' }
+          ]
+        }
+      },
+      {
+        id: 'powerhouse',
+        name: 'Powerhouse & MV Switchgear',
+        pos: new THREE.Vector3(8.8, 3.0, -2.4),
+        preset: 'substation',
+        inspectData: {
+          title: 'WTG-01 Control Powerhouse & MV Switchgear',
+          tag: 'CONTROL POWERHOUSE',
+          desc: 'Houses 33 kV SF6 gas-insulated switchgear (GIS), SCADA grid synchronization PLC, fiber-optic communications, and emergency auxiliary power batteries.',
+          specs: [
+            { k: 'Switchgear', v: '33 kV SF6 GIS Unit' },
+            { k: 'SCADA Protocol', v: 'IEC 61400-25 / Modbus TCP' },
+            { k: 'Protection', v: 'Arc-Flash & Overcurrent Relays' },
+            { k: 'Aux Backup', v: '400V/230V UPS Battery Pack' }
+          ]
+        }
+      },
+      {
+        id: 'foundation',
+        name: 'Gravity Base Plinth (680 m³)',
+        pos: new THREE.Vector3(0, 1.2, 5.5),
+        preset: 'ground',
+        inspectData: {
+          title: 'Reinforced Concrete Octagonal Gravity Base',
+          tag: 'FOUNDATION ENGINEERING',
+          desc: 'High-density C35/45 reinforced concrete slab foundation engineered to absorb 400+ kN horizontal aerodynamic thrust and extreme 52.5 m/s storm overturning moments.',
+          specs: [
+            { k: 'Concrete Volume', v: '~680 m³ (C35/45 Concrete)' },
+            { k: 'Steel Rebar', v: '~78 Metric Tons' },
+            { k: 'Anchor Bolts', v: '160x M42 Pre-tensioned 10.9' },
+            { k: 'Bearing Capacity', v: 'Max 260 kPa Overturning' }
+          ]
+        }
+      }
     ];
 
     this.hotspotsContainer.innerHTML = '';
@@ -1042,14 +1208,10 @@ class AeroTurbineApp {
       `;
       pin.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (spot.preset === 'farm') {
-          const tz = spot.pos.z;
-          const tx = spot.pos.x;
-          const ty = this.builder ? this.builder.getTerrainHeight(tx, tz) : 0;
-          this.camTargetPos = new THREE.Vector3(tx + 60, ty + 70, tz + 90);
-          this.camTargetLookAt = new THREE.Vector3(tx, ty + (this.builder ? this.builder.HUB_HEIGHT : 107.5), tz);
-          this.controls.autoRotate = false;
-        } else {
+        if (spot.inspectData) {
+          this.showInspectionCard(spot.inspectData);
+        }
+        if (spot.preset) {
           this.setCameraPreset(spot.preset);
         }
       });
@@ -1217,14 +1379,15 @@ class AeroTurbineApp {
     // Update SCADA Telemetry UI every frame
     this.updateHUD();
 
-    // Drone Flyover Mode Dynamic Trajectory along Mountain Ridge
+    // Drone Inspection Flyover Mode (Cinematic 360° Orbit around Single Turbine)
     if (this.currentPreset === 'drone') {
-      this.droneProgress = (time * 0.028) % 1.0;
-      const z = 85.0 - this.droneProgress * 760.0;
-      const x = this.builder.getRidgeX(z) - 32.0 + Math.sin(this.droneProgress * Math.PI * 4.0) * 16.0;
-      const y = this.builder.getRidgeCrestY(z) + 36.0 + Math.sin(this.droneProgress * Math.PI * 2.0) * 10.0;
+      this.droneProgress = (time * 0.12) % (Math.PI * 2);
+      const orbitR = 96.0;
+      const x = Math.sin(this.droneProgress) * orbitR;
+      const z = Math.cos(this.droneProgress) * orbitR;
+      const y = 82.0 + Math.sin(this.droneProgress * 2.0) * 16.0;
       this.camera.position.set(x, y, z);
-      this.controls.target.set(x + 28.0, y - 6.0, z - 85.0);
+      this.controls.target.set(0.0, 68.0, 0.0);
     }
 
     // Update 3D Digital Twin Hotspots Overlay
