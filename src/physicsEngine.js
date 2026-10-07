@@ -1,5 +1,5 @@
 /**
- * Physics & Aerodynamics Engine for Siemens Gamesa SG 5.0-145 Wind Turbines
+ * Physics & Aerodynamics Engine for WINDCARE MONITORING SG 5.0-145 Wind Turbines
  * Implements Betz Limit equations, Blade Element Aerodynamics,
  * OptiTip MPPT controller, Active Grid Curtailment, NRO Low-Noise mode,
  * Rotational Inertia, Drivetrain Torque Balance, and Mountain Wind Farm Fleet Telemetry.
@@ -7,7 +7,7 @@
 
 export class TurbinePhysicsEngine {
   constructor() {
-    // Physical Constants & Siemens Gamesa SG 5.0-145 Specifications
+    // Physical Constants & WINDCARE MONITORING SG 5.0-145 Specifications
     this.AIR_DENSITY = 1.225; // kg/m^3 at sea level & 15°C
     this.ROTOR_RADIUS = 72.5; // meters (145m rotor diameter)
     this.SWEPT_AREA = Math.PI * Math.pow(this.ROTOR_RADIUS, 2); // ~16,513 m^2

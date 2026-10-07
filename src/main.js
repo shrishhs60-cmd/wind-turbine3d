@@ -661,7 +661,7 @@ class AeroTurbineApp {
         exportBtn.classList.add('active');
         const exporter = new GLTFExporter();
         const exportRoot = new THREE.Group();
-        exportRoot.name = 'Siemens_Gamesa_SG_5_0_145';
+        exportRoot.name = 'WINDCARE_MONITORING_SG_5_0_145';
 
         if (this.builder.towerGroup) exportRoot.add(this.builder.towerGroup.clone(true));
         if (this.builder.nacelleGroup) exportRoot.add(this.builder.nacelleGroup.clone(true));
@@ -672,7 +672,7 @@ class AeroTurbineApp {
             const blob = new Blob([gltf], { type: 'model/gltf-binary' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = 'siemens-gamesa-sg-5-0-145.glb';
+            link.download = 'windcare-monitoring-sg-5-0-145.glb';
             link.click();
             URL.revokeObjectURL(link.href);
             exportBtn.classList.remove('active');

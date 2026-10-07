@@ -467,10 +467,10 @@ export class TurbineBuilder {
     ctx.fillStyle = baseGrime;
     ctx.fillRect(0, 1850, 1024, 198);
 
-    // Official Siemens Gamesa Tower Base Branding
+    // Official WINDCARE MONITORING Tower Base Branding
     ctx.fillStyle = '#00646e';
     ctx.font = 'bold 36px "Outfit", sans-serif';
-    ctx.fillText('SIEMENS GAMESA', 80, 1870);
+    ctx.fillText('WINDCARE MONITORING', 80, 1870);
 
     ctx.fillStyle = '#2c3a4d';
     ctx.font = 'bold 30px "JetBrains Mono", monospace';
@@ -572,16 +572,16 @@ export class TurbineBuilder {
     ctx.fillRect(80, 360, 580, 8);
 
     ctx.fillStyle = '#00646e';
-    ctx.font = 'bold 48px "Outfit", sans-serif';
-    ctx.fillText('SIEMENS', 80, 420);
+    ctx.font = 'bold 44px "Outfit", sans-serif';
+    ctx.fillText('WINDCARE', 80, 420);
 
     ctx.fillStyle = '#2b3642';
-    ctx.font = '400 48px "Outfit", sans-serif';
-    ctx.fillText('Gamesa', 315, 420);
+    ctx.font = '400 44px "Outfit", sans-serif';
+    ctx.fillText('MONITORING', 320, 420);
 
     ctx.fillStyle = '#55657a';
     ctx.font = 'bold 15px "JetBrains Mono", monospace';
-    ctx.fillText('RENEWABLE ENERGY', 82, 452);
+    ctx.fillText('INTELLIGENT WIND SCADA PLATFORM', 82, 452);
 
     ctx.fillStyle = '#0f172a';
     ctx.font = 'bold 24px "JetBrains Mono", monospace';
@@ -689,7 +689,7 @@ export class TurbineBuilder {
     ctx.save();
     ctx.translate(140, 1920);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('SIEMENS GAMESA IntegralBlade® · B71 · OPTIMA', 0, 0);
+    ctx.fillText('WINDCARE MONITORING IntegralBlade® · B71 · OPTIMA', 0, 0);
     ctx.restore();
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -996,8 +996,8 @@ export class TurbineBuilder {
     this.mountainRidgeGroup.add(boltCircleGroup);
 
     this.registerInspectable(plinth, {
-      title: 'Siemens Gamesa Gravity Foundation & Anchor Ring',
-      tag: 'SIEMENS GAMESA CIVIL',
+      title: 'WINDCARE MONITORING Gravity Foundation & Anchor Ring',
+      tag: 'WINDCARE CIVIL',
       desc: 'Reinforced concrete stepped gravity foundation on engineered sub-base. 160 pre-tensioned M42 anchor studs securely clamp the base tower flange against high aerodynamic shear loads.',
       specs: [
         { k: 'Footprint', v: 'Ø 16.8 m' },
@@ -1220,7 +1220,7 @@ export class TurbineBuilder {
     this.mountainRidgeGroup.add(txGroup);
 
     this.registerInspectable(cabinet, {
-      title: 'Siemens Gamesa 33kV Step-Up Substation Transformer',
+      title: 'WINDCARE MONITORING 33kV Step-Up Substation Transformer',
       tag: 'ELECTRICAL INFRASTRUCTURE',
       desc: 'Pad-mounted hermetically sealed oil-immersed step-up transformer (690V to 33kV). Connects SG 5.0-145 into the wind farm medium-voltage collector grid.',
       specs: [
@@ -2104,7 +2104,7 @@ export class TurbineBuilder {
     });
 
     this.registerInspectable(this.powerhouseMesh, {
-      title: 'Siemens Gamesa WTG-01 Powerhouse & MV Switchgear Facility',
+      title: 'WINDCARE MONITORING WTG-01 Powerhouse & MV Switchgear Facility',
       tag: 'CONTROL POWERHOUSE',
       desc: 'Architectural precast concrete powerhouse containing medium-voltage SF6 gas-insulated switchgear (GIS), SCADA grid synchronization automation, industrial HVAC cooling, and utility collector protections.',
       specs: [
@@ -2269,8 +2269,8 @@ export class TurbineBuilder {
     this.nacelleGroup.add(shellGroup);
 
     this.registerInspectable(this.portShellMesh, {
-      title: 'Siemens Gamesa SG 5.0-145 Nacelle Canopy & Observation Bay',
-      tag: 'SIEMENS GAMESA HOUSING',
+      title: 'WINDCARE MONITORING SG 5.0-145 Nacelle Canopy & Observation Bay',
+      tag: 'WINDCARE HOUSING',
       desc: 'Faceted aerodynamic fiberglass-reinforced polymer canopy with sound-attenuating insulation, OptimaFlex architecture, 5-ton service crane, and high-strength clear inspection observation bay.',
       specs: [
         { k: 'Platform', v: 'OptimaFlex SG 5.0' },
@@ -2526,7 +2526,7 @@ export class TurbineBuilder {
     this.drivetrainGroup.add(this.mainShaftGroup);
 
     this.registerInspectable(shaftBody, {
-      title: 'Siemens Gamesa Forged Low-Speed Main Shaft (LSS)',
+      title: 'WINDCARE MONITORING Forged Low-Speed Main Shaft (LSS)',
       tag: 'PRIMARY DRIVETRAIN',
       desc: 'Forged 34CrNiMo6 hollow alloy steel main shaft transmitting rotor aerodynamic torque (4,547 kN·m) directly into the planetary transmission.',
       specs: [
@@ -2754,7 +2754,7 @@ export class TurbineBuilder {
     this.drivetrainGroup.add(sightGlass);
 
     this.registerInspectable(gbSump, {
-      title: 'Siemens Gamesa 3-Stage Planetary-Helical Gearbox',
+      title: 'WINDCARE MONITORING 3-Stage Planetary-Helical Gearbox',
       tag: 'MECHANICAL TRANSMISSION',
       desc: 'High-efficiency epicyclic transmission (1:104.2 ratio). Open cutaway reveals Stage 1 internal ring gear, 3 revolving planet gears, central sun gear, and Stage 2 helical bull gear converting 10.5 RPM to 1,094 RPM.',
       specs: [
@@ -2937,7 +2937,7 @@ export class TurbineBuilder {
     this.drivetrainGroup.add(this.generatorRotor);
 
     this.registerInspectable(generatorStator, {
-      title: 'Siemens Gamesa 5.0 MW Dual-Fed Induction Generator (DFIG)',
+      title: 'WINDCARE MONITORING 5.0 MW Dual-Fed Induction Generator (DFIG)',
       tag: 'ELECTRICAL GENERATION',
       desc: '4-pole doubly-fed induction generator rated at 5,000 kW (690 V). Open cutaway reveals form-wound copper stator coils, inner rotating core with copper rotor bars, and high-speed centrifugal cooling fans spinning at 1,094 RPM.',
       specs: [
@@ -3063,8 +3063,8 @@ export class TurbineBuilder {
       this.bladeGroups.push(bladePitchGroup);
 
       this.registerInspectable(bladeMesh, {
-        title: `Siemens Gamesa 71m IntegralBlade® #${i + 1}`,
-        tag: 'SIEMENS GAMESA AERODYNAMICS',
+        title: `WINDCARE MONITORING 71m IntegralBlade® #${i + 1}`,
+        tag: 'WINDCARE AERODYNAMICS',
         desc: '71.0m carbon/glass hybrid blade manufactured in a single cast without glue seams. Equipped with patented DinoTails® Next Generation trailing-edge serrations and DinoShells® root fairings.',
         specs: [
           { k: 'Length', v: '71.0 m' },
@@ -3312,7 +3312,7 @@ export class TurbineBuilder {
       this.registerInspectable(body, {
         title: 'Coastal Raptor / Avian Wildlife',
         tag: 'BIODIVERSITY / WILDLIFE',
-        desc: 'Local avifauna soaring in thermal updrafts around the wind park. Siemens Gamesa turbines utilize automated camera radar systems to feather blades and protect birds in flight.',
+        desc: 'Local avifauna soaring in thermal updrafts around the wind park. WINDCARE MONITORING turbines utilize automated camera radar systems to feather blades and protect birds in flight.',
         specs: [
           { k: 'Avian Species', v: 'Red Kite / Sea Gull' },
           { k: 'Flight Altitude', v: `${Math.round(orbitHeight)} m AGL` },
@@ -3391,8 +3391,8 @@ export class TurbineBuilder {
 
       this.registerInspectable(body, {
         title: `Pasture Grazing Sheep #${idx + 1}`,
-        tag: 'WIND PARK ECOSYSTEM',
-        desc: 'Livestock grazing safely in the wind farm pasture. Siemens Gamesa DinoTails® low-noise technology guarantees sub-45dB(A) ground acoustics for peaceful coexistence.',
+        tag: 'WINDCARE PARK ECOSYSTEM',
+        desc: 'Livestock grazing safely in the wind farm pasture. WINDCARE MONITORING DinoTails® low-noise technology guarantees sub-45dB(A) ground acoustics for peaceful coexistence.',
         specs: [
           { k: 'Species', v: 'Domestic Ovis aries' },
           { k: 'Ground Noise', v: '< 42 dB(A)' },
@@ -3553,7 +3553,7 @@ export class TurbineBuilder {
     human.add(tablet);
 
     this.registerInspectable(torso, {
-      title: `Siemens Gamesa Service Technician (${roleName})`,
+      title: `WINDCARE MONITORING Service Technician (${roleName})`,
       tag: 'OPERATIONS & MAINTENANCE',
       desc: 'Certified GWO wind turbine maintenance engineer equipped with fall-arrest PPE and digital diagnostic tablet performing periodic SCADA inspection.',
       specs: [
@@ -3922,7 +3922,7 @@ export class TurbineBuilder {
       this.ridgeTurbinesGroup.add(turbineGroup);
 
       this.registerInspectable(nacelle, {
-        title: `Siemens Gamesa SG 5.0-145 (WTG-0${idx + 2})`,
+        title: `WINDCARE MONITORING SG 5.0-145 (WTG-0${idx + 2})`,
         tag: 'HIGHLAND RIDGE STRING',
         desc: `High-elevation 5.0 MW turbine installed along the mountain ridge crest at station z = ${zPos} m. Operating synchronously to capture laminar alpine wind shear above the valley cloud layer.`,
         specs: [
